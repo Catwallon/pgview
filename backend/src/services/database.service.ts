@@ -17,6 +17,6 @@ export class DatabaseService {
       "SELECT datname FROM pg_database WHERE datistemplate = false;",
     );
 
-    return res.rows.map((row: any) => ({ name: row.datname }));
+    return res.rows.map((row) => ({ name: row.datname }));
   }
 }

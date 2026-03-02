@@ -10,6 +10,7 @@ export class DatabaseController {
 
   async getAll(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const dbs = await this.databaseService.getAll();
+
     reply.send(dbs);
   }
 }
