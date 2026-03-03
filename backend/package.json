@@ -9,8 +9,8 @@
     "start": "node dist/index.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Catwallon",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "@fastify/cors": "^11.2.0",
