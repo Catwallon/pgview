@@ -10,7 +10,11 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-create TABLE posts (
+INSERT INTO users (name, email) VALUES
+('Alice Smith', 'alice.smith@example.com');
+
+
+CREATE TABLE posts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,

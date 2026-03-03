@@ -9,6 +9,8 @@ import { errorHandler } from "./utils/errorHandler.util.js";
 import { DatabaseController } from "./controllers/database.controller.js";
 import { container } from "tsyringe";
 import { TableController } from "./controllers/table.controller.js";
+import { ColumnController } from "./controllers/column.controller.js";
+import { RowController } from "./controllers/row.controller.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +29,20 @@ fastify.get("/api/databases", async (request, reply) => {
 fastify.get("/api/databases/:databaseName/tables", async (request, reply) => {
   return container.resolve(TableController).getAll(request, reply);
 });
+
+fastify.get(
+  "/api/databases/:databaseName/tables/:tableName/columns",
+  async (request, reply) => {
+    return container.resolve(ColumnController).getAll(request, reply);
+  },
+);
+
+fastify.get(
+  "/api/databases/:databaseName/tables/:tableName/rows",
+  async (request, reply) => {
+    return container.resolve(RowController).getAll(request, reply);
+  },
+);
 
 fastify.setErrorHandler(errorHandler);
 

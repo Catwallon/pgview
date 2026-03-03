@@ -10,23 +10,23 @@ import {
   TreeView,
 } from "@/components/kibo-ui/tree";
 import { Database, Table } from "lucide-react";
+import { useTableStore } from "@/stores/useTableStore";
 
 export default function NavigationTree() {
   const [databases, setDatabases] = useState<Array<{ name: string }>>([]);
-  const [tablesByDb, setTablesByDb] = useState<
-    Record<string, { name: string }[]>
-  >({});
+  const [tables, setTables] = useState<Record<string, { name: string }[]>>({});
+
+  const setTable = useTableStore((state) => state.setTable);
 
   useEffect(() => {
     async function fetchDatabases() {
       try {
-        const response = await fetch(
-          import.meta.env.MODE === "development"
-            ? "http://localhost:3000/api/databases"
-            : "/api/databases",
-        );
+        const API_URL =
+          import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
 
-        setDatabases(await response.json());
+        const dataBasesRes = await fetch(`${API_URL}/api/databases`);
+
+        setDatabases(await dataBasesRes.json());
       } catch (error) {
         console.error("Error fetching databases:", error);
       }
@@ -37,14 +37,16 @@ export default function NavigationTree() {
 
   async function fetchTables(databaseName: string) {
     try {
-      const response = await fetch(
-        import.meta.env.MODE === "development"
-          ? `http://localhost:3000/api/databases/${databaseName}/tables`
-          : `/api/databases/${databaseName}/tables`,
+      const API_URL =
+        import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
+
+      const tablesRes = await fetch(
+        `${API_URL}/api/databases/${databaseName}/tables`,
       );
 
-      const tables = await response.json();
-      setTablesByDb((prev) => ({ ...prev, [databaseName]: tables }));
+      const tables = await tablesRes.json();
+
+      setTables((prev) => ({ ...prev, [databaseName]: tables }));
     } catch (error) {
       console.error("Error fetching tables:", error);
     }
@@ -61,14 +63,16 @@ export default function NavigationTree() {
               <TreeLabel>{db.name}</TreeLabel>
             </TreeNodeTrigger>
             <TreeNodeContent hasChildren>
-              {tablesByDb[db.name]?.map((table) => (
+              {tables[db.name]?.map((table) => (
                 <TreeNode
                   isLast
                   level={2}
                   key={db.name + "-" + table.name}
                   nodeId={db.name + "-" + table.name}
                 >
-                  <TreeNodeTrigger>
+                  <TreeNodeTrigger
+                    onClick={() => setTable(db.name, table.name)}
+                  >
                     <TreeExpander />
                     <TreeIcon icon={<Table />} />
                     <TreeLabel>{table.name}</TreeLabel>
