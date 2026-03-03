@@ -4,16 +4,16 @@ import { singleton } from "tsyringe";
 
 @singleton()
 export class DatabaseService {
-  private pool = new Pool({
-    user: "guest",
-    host: "localhost",
-    database: "postgres",
-    password: "guest",
-    port: 5432,
-  });
-
   async getAll(): Promise<DatabaseResponse[]> {
-    const res = await this.pool.query(
+    const pool = new Pool({
+      host: process.env.PGVIEW_DB_HOST || "localhost",
+      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
+      user: process.env.PGVIEW_DB_USER,
+      password: process.env.PGVIEW_DB_PASSWORD,
+      database: process.env.PGVIEW_DB_NAME,
+    });
+
+    const res = await pool.query(
       "SELECT datname FROM pg_database WHERE datistemplate = false;",
     );
 

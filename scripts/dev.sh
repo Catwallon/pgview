@@ -18,4 +18,10 @@ docker exec -i postgres psql -U guest -d postgres < "$PROJECT_DIR/scripts/init.s
 npm install --prefix "$PROJECT_DIR/backend"
 npm install --prefix "$PROJECT_DIR/frontend"
 
+export PGVIEW_DB_HOST=localhost
+export PGVIEW_DB_PORT=5432
+export PGVIEW_DB_USER=guest
+export PGVIEW_DB_PASSWORD=guest
+export PGVIEW_DB_NAME=postgres
+
 concurrently "npm run dev --prefix $PROJECT_DIR/backend" "npm run dev --prefix $PROJECT_DIR/frontend"
