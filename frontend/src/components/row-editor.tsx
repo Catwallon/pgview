@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import Editor from "@monaco-editor/react";
 import { Button } from "@/components/ui/button";
+import { useRowStore } from "@/stores/useRowStore";
 
 export function RowEditor({
   openRowEditor,
@@ -14,6 +15,8 @@ export function RowEditor({
   openRowEditor: boolean;
   setOpenRowEditor: (v: boolean) => void;
 }) {
+  const row = useRowStore((state) => state.row);
+
   return (
     <Dialog open={openRowEditor} onOpenChange={setOpenRowEditor}>
       <DialogContent className="w-150 h-150">
@@ -23,7 +26,7 @@ export function RowEditor({
         <Editor
           theme="vs-dark"
           defaultLanguage="json"
-          defaultValue="{}"
+          defaultValue={JSON.stringify(row, null, 2)}
           options={{
             glyphMargin: false,
             folding: false,

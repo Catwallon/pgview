@@ -6,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRowStore } from "@/stores/useRowStore";
 import { useTableStore } from "@/stores/useTableStore";
 
 export function TableList({
@@ -15,6 +16,7 @@ export function TableList({
 }) {
   const columns = useTableStore((state) => state.columns);
   const rows = useTableStore((state) => state.rows);
+  const setRow = useRowStore((state) => state.setRow);
 
   return (
     <Table>
@@ -27,7 +29,13 @@ export function TableList({
       </TableHeader>
       <TableBody>
         {rows.map((row) => (
-          <TableRow key={row.id} onClick={() => setOpenRowEditor(true)}>
+          <TableRow
+            key={row.id}
+            onClick={() => {
+              setOpenRowEditor(true);
+              setRow(row);
+            }}
+          >
             {Object.entries(row).map(([key, value]) => (
               <TableCell key={key}>{String(value)}</TableCell>
             ))}
