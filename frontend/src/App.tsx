@@ -2,6 +2,7 @@ import NavigationTree from "@/components/navigation-tree";
 import { TableList } from "./components/table-list";
 import { RowEditor } from "./components/row-editor";
 import { useState } from "react";
+import { TablePagination } from "./components/table-pagination";
 
 function App() {
   const [openRowEditor, setOpenRowEditor] = useState(false);
@@ -17,6 +18,9 @@ function App() {
       </nav>
       <main className="ml-64 flex-1 bg-gray-50">
         <TableList setOpenRowEditor={setOpenRowEditor} />
+        <div className="my-4">
+          <TablePagination visiblePageCount={5} />
+        </div>
       </main>
       <RowEditor
         openRowEditor={openRowEditor}

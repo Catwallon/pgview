@@ -10,8 +10,11 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users (name, email) VALUES
-('Alice Smith', 'alice.smith@example.com');
+INSERT INTO users (name, email)
+SELECT 
+    'User ' || i, 
+    'user' || i || '@example.com'
+FROM generate_series(1, 1000) AS i;
 
 
 CREATE TABLE posts (

@@ -12,7 +12,17 @@ export class RowController {
       tableName: string;
     };
 
-    const columns = await this.rowService.getMany(databaseName, tableName);
+    const { limit, page } = request.query as {
+      limit: number;
+      page: number;
+    };
+
+    const columns = await this.rowService.getMany(
+      databaseName,
+      tableName,
+      limit,
+      page,
+    );
 
     reply.send(columns);
   }
