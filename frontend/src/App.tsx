@@ -3,9 +3,11 @@ import { TableList } from "./components/table-list";
 import { RowEditor } from "./components/row-editor";
 import { useState } from "react";
 import { TablePagination } from "./components/table-pagination";
+import { useViewerStore } from "./stores/useViewerStore";
 
 function App() {
   const [openRowEditor, setOpenRowEditor] = useState(false);
+  const tableName = useViewerStore((state) => state.tableName);
 
   return (
     <div className="flex min-h-screen">
@@ -17,10 +19,20 @@ function App() {
         <NavigationTree />
       </nav>
       <main className="ml-64 flex-1 bg-gray-50">
-        <TableList setOpenRowEditor={setOpenRowEditor} />
-        <div className="my-4">
-          <TablePagination visiblePageCount={5} />
-        </div>
+        {tableName ? (
+          <>
+            <TableList setOpenRowEditor={setOpenRowEditor} />
+            <div className="my-4">
+              <TablePagination visiblePageCount={5} />
+            </div>
+          </>
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <p className="text-xl text-gray-500">
+              Select a table to view its data
+            </p>
+          </div>
+        )}
       </main>
       <RowEditor
         openRowEditor={openRowEditor}
