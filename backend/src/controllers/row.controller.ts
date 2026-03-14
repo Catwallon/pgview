@@ -12,9 +12,10 @@ export class RowController {
       tableName: string;
     };
 
-    const { limit, page } = request.query as {
+    const { limit, page, query } = request.query as {
       limit: number;
       page: number;
+      query: string;
     };
 
     const rows = await this.rowService.getMany(
@@ -22,6 +23,7 @@ export class RowController {
       tableName,
       limit,
       page,
+      query,
     );
 
     reply.send(rows);

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { RowPagination } from "../features/database/RowPagination";
 import { useAppStore } from "../../stores/useAppStore";
 import Logo from "../../../public/icon.svg";
+import { RowSearch } from "../features/database/RowSearch";
 
 export function AppLayout() {
   const [openRowEditor, setOpenRowEditor] = useState(false);
@@ -25,6 +26,9 @@ export function AppLayout() {
       <main className="ml-64 flex-1 bg-white">
         {table ? (
           <>
+            <div className="p-4 border-b">
+              <RowSearch />
+            </div>
             <RowList setOpenRowEditor={setOpenRowEditor} />
             <div className="my-4">
               <RowPagination visiblePageCount={5} />

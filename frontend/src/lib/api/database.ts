@@ -13,9 +13,10 @@ export const fetchGetRows = (
   tableName: string,
   limit: number,
   page: number,
+  query: string,
 ) =>
   apiFetch(
-    `/databases/${dbName}/tables/${tableName}/rows?limit=${limit}&page=${page}`,
+    `/databases/${dbName}/tables/${tableName}/rows?limit=${limit}&page=${page}&query=${query}`,
   );
 
 export const fetchEditRow = (

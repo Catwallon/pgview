@@ -1,15 +1,19 @@
 import { Pool } from "pg";
-import { singleton } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 import { RowResponse } from "../types/row.response.js";
 import { Pagination } from "../types/pagination.type.js";
+import { ColumnService } from "./column.service.js";
 
 @singleton()
 export class RowService {
+  constructor(@inject(ColumnService) private columnService: ColumnService) {}
+
   async getMany(
     dbName: string,
     tableName: string,
     limit: number,
     page: number,
+    query: string,
   ): Promise<Pagination<RowResponse>> {
     const pool = new Pool({
       host: process.env.PGVIEW_DB_HOST || "localhost",
@@ -19,13 +23,21 @@ export class RowService {
       database: dbName,
     });
 
+    const columns = await this.columnService.getAll(dbName, tableName);
+    const whereClause = columns
+      .map((c) => `${c.name}::text ILIKE $1`)
+      .join(" OR ");
+
     const offset = (page - 1) * limit;
 
     const [rowsRes, countRes] = await Promise.all([
       pool.query(
-        `SELECT * FROM ${tableName} ORDER BY id LIMIT ${limit} OFFSET ${offset};`,
+        `SELECT * FROM ${tableName} WHERE ${whereClause} ORDER BY id LIMIT ${limit} OFFSET ${offset};`,
+        [`%${query}%`],
       ),
-      pool.query(`SELECT COUNT(*) FROM ${tableName};`),
+      pool.query(`SELECT COUNT(*) FROM ${tableName} WHERE ${whereClause};`, [
+        `%${query}%`,
+      ]),
     ]);
 
     return {
