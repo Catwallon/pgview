@@ -11,14 +11,14 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen">
-      <nav className="fixed left-0 top-0 h-screen w-64 border-r bg-white">
+      <nav className="fixed left-0 top-0 h-screen w-64 border-r bg-gray-50">
         <h1 className="my-4 text-center scroll-m-20 text-4xl font-semibold italic tracking-tight text-balance">
           PGVIEW
         </h1>
         <div className="mb-4 border-t" />
         <DatabaseTree />
       </nav>
-      <main className="ml-64 flex-1 bg-gray-50">
+      <main className="ml-64 flex-1 bg-white">
         {table ? (
           <>
             <RowList setOpenRowEditor={setOpenRowEditor} />
