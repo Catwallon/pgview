@@ -67,28 +67,32 @@ export function RowEditor({
 
   return (
     <Dialog open={openRowEditor} onOpenChange={setOpenRowEditor}>
-      <DialogContent className="w-150 h-150">
+      <DialogContent className="w-130 h-150">
         <DialogHeader>
           <DialogTitle>Edit row</DialogTitle>
         </DialogHeader>
-        <Editor
-          onMount={(editor, monaco) => {
-            editorRef.current = editor;
-            handleMount(editor, monaco);
-          }}
-          theme="vs"
-          defaultLanguage="json"
-          defaultValue={JSON.stringify(row, null, 2)}
-          options={{
-            glyphMargin: false,
-            folding: false,
-            lineNumbers: "off",
-            lineDecorationsWidth: 0,
-            lineNumbersMinChars: 0,
-            minimap: { enabled: false },
-            overviewRulerBorder: false,
-          }}
-        />
+        <div className="border rounded-xl p-4">
+          <Editor
+            height="100%"
+            onMount={(editor, monaco) => {
+              editorRef.current = editor;
+              handleMount(editor, monaco);
+            }}
+            theme="vs"
+            defaultLanguage="json"
+            defaultValue={JSON.stringify(row, null, 2)}
+            options={{
+              glyphMargin: false,
+              folding: false,
+              lineNumbers: "off",
+              lineDecorationsWidth: 0,
+              lineNumbersMinChars: 0,
+              minimap: { enabled: false },
+              overviewRulerBorder: false,
+              scrollBeyondLastLine: false,
+            }}
+          />
+        </div>
         <Button className="mt-4 ml-auto" onClick={() => save()}>
           Save
         </Button>
