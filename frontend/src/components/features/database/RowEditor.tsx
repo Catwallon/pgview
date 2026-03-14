@@ -9,7 +9,7 @@ import type { editor } from "monaco-editor";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
 import { fetchEditRow } from "@/lib/api/database";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export function RowEditor({
   openRowEditor,
@@ -19,6 +19,7 @@ export function RowEditor({
   setOpenRowEditor: (v: boolean) => void;
 }) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const [hasErrors, setHasErrors] = useState(false);
 
   const db = useAppStore((state) => state.db);
   const table = useAppStore((state) => state.table);
@@ -78,6 +79,10 @@ export function RowEditor({
               editorRef.current = editor;
               handleMount(editor, monaco);
             }}
+            onValidate={(markers) => {
+              const errors = markers.filter((m) => m.severity === 8);
+              setHasErrors(errors.length > 0);
+            }}
             theme="vs"
             defaultLanguage="json"
             defaultValue={JSON.stringify(row, null, 2)}
@@ -93,7 +98,11 @@ export function RowEditor({
             }}
           />
         </div>
-        <Button className="mt-4 ml-auto" onClick={() => save()}>
+        <Button
+          className="mt-4 ml-auto"
+          onClick={() => save()}
+          disabled={hasErrors}
+        >
           Save
         </Button>
       </DialogContent>
