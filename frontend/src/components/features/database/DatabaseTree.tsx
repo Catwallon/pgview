@@ -9,7 +9,7 @@ import {
   TreeProvider,
   TreeView,
 } from "@/components/kibo-ui/tree";
-import { Database, Table } from "lucide-react";
+import { Database, Table, SquareDashed } from "lucide-react";
 import { useAppStore } from "@/stores/useAppStore";
 import { fetchGetDatabases, fetchGetTables } from "@/lib/api/database";
 
@@ -27,7 +27,7 @@ export function DatabaseTree() {
     <TreeProvider>
       <TreeView>
         {databases.map((db) => (
-          <TreeNode level={1} key={db.name} nodeId={db.name}>
+          <TreeNode level={0} key={db.name} nodeId={db.name}>
             <TreeNodeTrigger
               onClick={() =>
                 fetchGetTables(db.name).then((tables) => {
@@ -40,22 +40,34 @@ export function DatabaseTree() {
               <TreeLabel>{db.name}</TreeLabel>
             </TreeNodeTrigger>
             <TreeNodeContent hasChildren>
-              {tables[db.name]?.map((table) => (
-                <TreeNode
-                  isLast
-                  level={2}
-                  key={db.name + "-" + table.name}
-                  nodeId={db.name + "-" + table.name}
-                >
-                  <TreeNodeTrigger
-                    onClick={() => setTable(db.name, table.name)}
+              {tables[db.name]?.length > 0 ? (
+                tables[db.name]?.map((table, i) => (
+                  <TreeNode
+                    isLast={i === tables[db.name].length - 1}
+                    level={1}
+                    key={db.name + "-" + table.name}
+                    nodeId={db.name + "-" + table.name}
                   >
+                    <TreeNodeTrigger
+                      onClick={() => setTable(db.name, table.name)}
+                    >
+                      <TreeExpander />
+                      <TreeIcon icon={<Table />} />
+                      <TreeLabel>{table.name}</TreeLabel>
+                    </TreeNodeTrigger>
+                  </TreeNode>
+                ))
+              ) : (
+                <TreeNode isLast level={1} nodeId={db.name + "-no-tables"}>
+                  <TreeNodeTrigger>
                     <TreeExpander />
-                    <TreeIcon icon={<Table />} />
-                    <TreeLabel>{table.name}</TreeLabel>
+                    <TreeIcon icon={<SquareDashed />} />
+                    <TreeLabel className="text-muted-foreground italic">
+                      No tables
+                    </TreeLabel>
                   </TreeNodeTrigger>
                 </TreeNode>
-              ))}
+              )}
             </TreeNodeContent>
           </TreeNode>
         ))}
