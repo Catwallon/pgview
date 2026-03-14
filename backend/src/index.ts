@@ -44,6 +44,13 @@ fastify.get(
   },
 );
 
+fastify.put(
+  "/api/databases/:dbName/tables/:tableName/rows/:rowId",
+  async (request, reply) => {
+    return container.resolve(RowController).edit(request, reply);
+  },
+);
+
 fastify.setErrorHandler(errorHandler);
 
 if (process.env.NODE_ENV === "production") {
@@ -58,6 +65,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   fastify.register(cors, {
     origin: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   });
 }
 

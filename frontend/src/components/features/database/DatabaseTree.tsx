@@ -11,7 +11,7 @@ import {
 } from "@/components/kibo-ui/tree";
 import { Database, Table } from "lucide-react";
 import { useAppStore } from "@/stores/useAppStore";
-import { API_URL } from "@/config/api.config";
+import { fetchGetDatabases, fetchGetTables } from "@/lib/api/database";
 
 export function DatabaseTree() {
   const [databases, setDatabases] = useState<Array<{ name: string }>>([]);
@@ -20,44 +20,21 @@ export function DatabaseTree() {
   const setTable = useAppStore((state) => state.setTable);
 
   useEffect(() => {
-    async function fetchDatabases() {
-      try {
-        const databases = await fetch(`${API_URL}/api/databases`).then((res) =>
-          res.json(),
-        );
-
-        setDatabases(databases);
-      } catch (error) {
-        console.error("Error fetching databases:", error);
-      }
-    }
-
-    fetchDatabases();
+    fetchGetDatabases().then((databases) => setDatabases(databases));
   }, []);
-
-  async function fetchTables(dbName: string) {
-    try {
-      const API_URL =
-        import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
-
-      const tablesRes = await fetch(
-        `${API_URL}/api/databases/${dbName}/tables`,
-      );
-
-      const tables = await tablesRes.json();
-
-      setTables((prev) => ({ ...prev, [dbName]: tables }));
-    } catch (error) {
-      console.error("Error fetching tables:", error);
-    }
-  }
 
   return (
     <TreeProvider>
       <TreeView>
         {databases.map((db) => (
           <TreeNode level={1} key={db.name} nodeId={db.name}>
-            <TreeNodeTrigger onClick={() => fetchTables(db.name)}>
+            <TreeNodeTrigger
+              onClick={() =>
+                fetchGetTables(db.name).then((tables) => {
+                  setTables((prev) => ({ ...prev, [db.name]: tables }));
+                })
+              }
+            >
               <TreeExpander hasChildren />
               <TreeIcon icon={<Database />} />
               <TreeLabel>{db.name}</TreeLabel>

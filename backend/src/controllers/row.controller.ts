@@ -17,13 +17,32 @@ export class RowController {
       page: number;
     };
 
-    const columns = await this.rowService.getMany(
+    const rows = await this.rowService.getMany(
       dbName,
       tableName,
       limit,
       page,
     );
 
-    reply.send(columns);
+    reply.send(rows);
+  }
+
+  async edit(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const { dbName, tableName, rowId } = request.params as {
+      dbName: string;
+      tableName: string;
+      rowId: string;
+    };
+
+    const updateData = request.body as Record<string, string>;
+
+    const row = await this.rowService.edit(
+      dbName,
+      tableName,
+      rowId,
+      updateData,
+    );
+
+    reply.send(row);
   }
 }

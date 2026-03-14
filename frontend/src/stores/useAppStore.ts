@@ -1,4 +1,4 @@
-import { API_URL } from "@/config/api.config";
+import { fetchGetColumns, fetchGetRows } from "@/lib/api/database";
 import { create } from "zustand";
 
 export interface AppState {
@@ -12,8 +12,6 @@ export interface AppState {
   setTable: (db: string, table: string) => void;
   setPage: (page: number) => void;
   setRow: (row: Record<string, string>) => void;
-  fetchColumns: () => Promise<void>;
-  fetchRows: () => Promise<void>;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -27,49 +25,30 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setTable: (db: string, table: string) => {
     set({ db, table, page: 1, row: null });
-    get().fetchColumns();
-    get().fetchRows();
+
+    fetchGetColumns(db, table).then((columns) => set({ columns }));
+    fetchGetRows(db, table, 20, 1).then((res) =>
+      set({ rows: res.items, totalPages: res.totalPages }),
+    );
   },
 
   setPage: (page: number) => {
-    const { totalPages } = get();
-
+    const { db, table, totalPages } = get();
+    if (!db || !table) {
+      return;
+    }
     if (page < 1 || page > totalPages) {
       return;
     }
 
     set({ page });
-    get().fetchRows();
+
+    fetchGetRows(db, table, 20, page).then((res) =>
+      set({ rows: res.items, totalPages: res.totalPages }),
+    );
   },
 
   setRow: (row: Record<string, string>) => {
     set({ row });
-  },
-
-  fetchColumns: async () => {
-    const { db, table } = get();
-
-    if (!db || !table) {
-      return;
-    }
-
-    const columns = await fetch(
-      `${API_URL}/api/databases/${db}/tables/${table}/columns`,
-    ).then((res) => res.json());
-
-    set({ columns });
-  },
-
-  fetchRows: async () => {
-    const { db, table, page } = get();
-    if (!db || !table) {
-      return;
-    }
-
-    const rows = await fetch(
-      `${API_URL}/api/databases/${db}/tables/${table}/rows?page=${page}&limit=20`,
-    ).then((res) => res.json());
-
-    set({ rows: rows.items, totalPages: rows.totalPages });
   },
 }));
