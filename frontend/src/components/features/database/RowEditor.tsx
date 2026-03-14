@@ -4,7 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Editor from "@monaco-editor/react";
+import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
@@ -24,6 +24,7 @@ export function RowEditor({
   const table = useAppStore((state) => state.table);
   const row = useAppStore((state) => state.row);
   const page = useAppStore((state) => state.page);
+  const columns = useAppStore((state) => state.columns);
 
   const setPage = useAppStore((state) => state.setPage);
 
@@ -43,6 +44,27 @@ export function RowEditor({
     setOpenRowEditor(false);
   }
 
+  function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      schemaValidation: "error",
+      schemas: [
+        {
+          uri: "https://schema.json",
+          fileMatch: ["*"],
+          schema: {
+            type: "object",
+            properties: Object.fromEntries(
+              columns.map((col) => [col.name, { type: "string" }]),
+            ),
+            required: ["name"],
+            additionalProperties: false,
+          },
+        },
+      ],
+    });
+  }
+
   return (
     <Dialog open={openRowEditor} onOpenChange={setOpenRowEditor}>
       <DialogContent className="w-150 h-150">
@@ -50,8 +72,11 @@ export function RowEditor({
           <DialogTitle>Edit row</DialogTitle>
         </DialogHeader>
         <Editor
-          onMount={(editor) => (editorRef.current = editor)}
-          theme="vs-dark"
+          onMount={(editor, monaco) => {
+            editorRef.current = editor;
+            handleMount(editor, monaco);
+          }}
+          theme="vs"
           defaultLanguage="json"
           defaultValue={JSON.stringify(row, null, 2)}
           options={{
