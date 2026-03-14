@@ -6,17 +6,17 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "./ui/pagination";
-import { useViewerStore } from "@/stores/useViewerStore";
+} from "../../ui/pagination";
+import { useAppStore } from "@/stores/useAppStore";
 
-export function TablePagination({
+export function RowPagination({
   visiblePageCount = 10,
 }: {
   visiblePageCount: number;
 }) {
-  const currentPage = useViewerStore((state) => state.page);
-  const totalPages = useViewerStore((state) => state.totalPages);
-  const setPage = useViewerStore((state) => state.setPage);
+  const currentPage = useAppStore((state) => state.page);
+  const totalPages = useAppStore((state) => state.totalPages);
+  const setPage = useAppStore((state) => state.setPage);
 
   const half = Math.floor(visiblePageCount / 2);
 

@@ -6,7 +6,7 @@ import { ColumnResponse } from "../types/column.response.js";
 @singleton()
 export class ColumnService {
   async getAll(
-    databaseName: string,
+    dbName: string,
     tableName: string,
   ): Promise<ColumnResponse[]> {
     const pool = new Pool({
@@ -14,7 +14,7 @@ export class ColumnService {
       port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
       user: process.env.PGVIEW_DB_USER,
       password: process.env.PGVIEW_DB_PASSWORD,
-      database: databaseName,
+      database: dbName,
     });
 
     const res = await pool.query(

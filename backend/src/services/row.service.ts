@@ -6,7 +6,7 @@ import { Pagination } from "../types/pagination.type.js";
 @singleton()
 export class RowService {
   async getMany(
-    databaseName: string,
+    dbName: string,
     tableName: string,
     limit: number,
     page: number,
@@ -16,7 +16,7 @@ export class RowService {
       port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
       user: process.env.PGVIEW_DB_USER,
       password: process.env.PGVIEW_DB_PASSWORD,
-      database: databaseName,
+      database: dbName,
     });
 
     const offset = (page - 1) * limit;

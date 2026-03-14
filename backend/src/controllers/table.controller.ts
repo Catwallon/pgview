@@ -7,9 +7,9 @@ export class TableController {
   constructor(@inject(TableService) private tableService: TableService) {}
 
   async getAll(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { databaseName } = request.params as { databaseName: string };
+    const { dbName } = request.params as { dbName: string };
 
-    const tables = await this.tableService.getAll(databaseName);
+    const tables = await this.tableService.getAll(dbName);
 
     reply.send(tables);
   }

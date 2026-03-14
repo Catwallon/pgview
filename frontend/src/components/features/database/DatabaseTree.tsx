@@ -10,14 +10,14 @@ import {
   TreeView,
 } from "@/components/kibo-ui/tree";
 import { Database, Table } from "lucide-react";
-import { useViewerStore } from "@/stores/useViewerStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { API_URL } from "@/config/api.config";
 
-export default function NavigationTree() {
+export function DatabaseTree() {
   const [databases, setDatabases] = useState<Array<{ name: string }>>([]);
   const [tables, setTables] = useState<Record<string, { name: string }[]>>({});
 
-  const setTable = useViewerStore((state) => state.setTable);
+  const setTable = useAppStore((state) => state.setTable);
 
   useEffect(() => {
     async function fetchDatabases() {
@@ -35,18 +35,18 @@ export default function NavigationTree() {
     fetchDatabases();
   }, []);
 
-  async function fetchTables(databaseName: string) {
+  async function fetchTables(dbName: string) {
     try {
       const API_URL =
         import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
 
       const tablesRes = await fetch(
-        `${API_URL}/api/databases/${databaseName}/tables`,
+        `${API_URL}/api/databases/${dbName}/tables`,
       );
 
       const tables = await tablesRes.json();
 
-      setTables((prev) => ({ ...prev, [databaseName]: tables }));
+      setTables((prev) => ({ ...prev, [dbName]: tables }));
     } catch (error) {
       console.error("Error fetching tables:", error);
     }

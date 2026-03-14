@@ -26,19 +26,19 @@ fastify.get("/api/databases", async (request, reply) => {
   return container.resolve(DatabaseController).getAll(request, reply);
 });
 
-fastify.get("/api/databases/:databaseName/tables", async (request, reply) => {
+fastify.get("/api/databases/:dbName/tables", async (request, reply) => {
   return container.resolve(TableController).getAll(request, reply);
 });
 
 fastify.get(
-  "/api/databases/:databaseName/tables/:tableName/columns",
+  "/api/databases/:dbName/tables/:tableName/columns",
   async (request, reply) => {
     return container.resolve(ColumnController).getAll(request, reply);
   },
 );
 
 fastify.get(
-  "/api/databases/:databaseName/tables/:tableName/rows",
+  "/api/databases/:dbName/tables/:tableName/rows",
   async (request, reply) => {
     return container.resolve(RowController).getAll(request, reply);
   },

@@ -7,8 +7,8 @@ export class RowController {
   constructor(@inject(RowService) private rowService: RowService) {}
 
   async getAll(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { databaseName, tableName } = request.params as {
-      databaseName: string;
+    const { dbName, tableName } = request.params as {
+      dbName: string;
       tableName: string;
     };
 
@@ -18,7 +18,7 @@ export class RowController {
     };
 
     const columns = await this.rowService.getMany(
-      databaseName,
+      dbName,
       tableName,
       limit,
       page,

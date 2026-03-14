@@ -6,16 +6,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useViewerStore } from "@/stores/useViewerStore";
+import { useAppStore } from "@/stores/useAppStore";
 
-export function TableList({
+export function RowList({
   setOpenRowEditor,
 }: {
   setOpenRowEditor: (v: boolean) => void;
 }) {
-  const columns = useViewerStore((state) => state.columns);
-  const rows = useViewerStore((state) => state.rows);
-  const setRow = useViewerStore((state) => state.setRow);
+  const columns = useAppStore((state) => state.columns);
+  const rows = useAppStore((state) => state.rows);
+  const setRow = useAppStore((state) => state.setRow);
 
   return (
     <Table>

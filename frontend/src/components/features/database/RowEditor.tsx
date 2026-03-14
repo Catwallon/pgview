@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import Editor from "@monaco-editor/react";
 import { Button } from "@/components/ui/button";
-import { useViewerStore } from "@/stores/useViewerStore";
+import { useAppStore } from "@/stores/useAppStore";
 
 export function RowEditor({
   openRowEditor,
@@ -15,7 +15,7 @@ export function RowEditor({
   openRowEditor: boolean;
   setOpenRowEditor: (v: boolean) => void;
 }) {
-  const row = useViewerStore((state) => state.row);
+  const row = useAppStore((state) => state.row);
 
   return (
     <Dialog open={openRowEditor} onOpenChange={setOpenRowEditor}>

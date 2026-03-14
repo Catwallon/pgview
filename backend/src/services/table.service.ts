@@ -4,13 +4,13 @@ import { TableResponse } from "../types/table.response.js";
 
 @singleton()
 export class TableService {
-  async getAll(databaseName: string): Promise<TableResponse[]> {
+  async getAll(dbName: string): Promise<TableResponse[]> {
     const pool = new Pool({
       host: process.env.PGVIEW_DB_HOST || "localhost",
       port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
       user: process.env.PGVIEW_DB_USER,
       password: process.env.PGVIEW_DB_PASSWORD,
-      database: databaseName,
+      database: dbName,
     });
 
     const res = await pool.query(
