@@ -6,6 +6,7 @@ import { RowPagination } from "../features/database/RowPagination";
 import { useAppStore } from "../../stores/useAppStore";
 import Logo from "../../../public/icon.svg";
 import { RowSearch } from "../features/database/RowSearch";
+import { version } from "../../../package.json";
 
 export function AppLayout() {
   const [openRowEditor, setOpenRowEditor] = useState(false);
@@ -13,7 +14,7 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen">
-      <nav className="fixed left-0 top-0 h-screen w-64 border-r bg-gray-50">
+      <nav className="fixed left-0 top-0 h-screen w-64 border-r bg-gray-50 flex flex-col">
         <div className="flex items-center ml-4 gap-2 my-4">
           <img src={Logo} alt="logo" className="w-12 h-12" />
           <h1 className="text-4xl font-semibold italic tracking-tight">
@@ -22,6 +23,14 @@ export function AppLayout() {
         </div>
         <div className="mb-4 border-t" />
         <DatabaseTree />
+        <div className="mt-auto p-4 border-t">
+          <a
+            className="text-xs text-gray-400"
+            href="https://github.com/catwallon/pgview"
+          >
+            v{version} · Made by Catwallon
+          </a>
+        </div>
       </nav>
       <main className="ml-64 flex-1 bg-white">
         {table ? (
