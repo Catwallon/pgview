@@ -2,22 +2,15 @@ FROM node:25-alpine
 
 WORKDIR /app
 
-RUN mkdir backend
+COPY . .
 
-COPY backend backend
+RUN npm install -g pnpm
 
-RUN npm install --prefix backend
-RUN npm run build --prefix backend
-
-RUN mkdir frontend
-
-COPY frontend frontend
-
-RUN npm install --prefix frontend
-RUN npm run build --prefix frontend
+RUN pnpm install
+RUN pnpm run build 
 
 EXPOSE 3000
 
 ENV NODE_ENV=production
 
-CMD ["npm", "run", "start", "--prefix", "backend"]
+CMD [`"pnpm", "start", "--filter", "@pgview/backend"`]

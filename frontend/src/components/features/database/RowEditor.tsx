@@ -38,14 +38,16 @@ export function RowEditor({
       db,
       table,
       row.id,
-      JSON.parse(editorRef.current?.getValue()),
+      JSON.parse(editorRef.current.getValue()),
     );
     setPage(page);
 
     setOpenRowEditor(false);
   }
 
-  function handleMount(monaco: Monaco) {
+  function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
+    editorRef.current = editor;
+
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemaValidation: "error",
@@ -75,10 +77,7 @@ export function RowEditor({
         <div className="border rounded-xl p-4">
           <Editor
             height="100%"
-            onMount={(editor, monaco) => {
-              editorRef.current = editor;
-              handleMount(monaco);
-            }}
+            onMount={handleMount}
             onValidate={(markers) => {
               const errors = markers.filter((m) => m.severity === 8);
               setHasErrors(errors.length > 0);
@@ -98,11 +97,7 @@ export function RowEditor({
             }}
           />
         </div>
-        <Button
-          className="mt-4 ml-auto"
-          onClick={() => save()}
-          disabled={hasErrors}
-        >
+        <Button className="mt-4 ml-auto" onClick={save} disabled={hasErrors}>
           Save
         </Button>
       </DialogContent>

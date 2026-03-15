@@ -1,0 +1,10 @@
+{
+  "name": "pgview",
+  "author": "Catwallon",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "build": "pnpm -r build"
+  }
+}
