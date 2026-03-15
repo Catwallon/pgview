@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
 import { fetchEditRow } from "@/lib/api/database";
 import { useRef, useState } from "react";
+import { getJsonSchemaForPostgresType } from "@/util/postgresJsonSchema";
 
 export function RowEditor({
   openRowEditor,
@@ -58,7 +59,10 @@ export function RowEditor({
           schema: {
             type: "object",
             properties: Object.fromEntries(
-              columns.map((col) => [col.name, { type: "string" }]),
+              columns.map((col) => [
+                col.name,
+                getJsonSchemaForPostgresType(col.type, col.nullable),
+              ]),
             ),
             required: ["name"],
             additionalProperties: false,

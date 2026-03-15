@@ -4,7 +4,7 @@ import { create } from "zustand";
 export interface AppState {
   db: string | null;
   table: string | null;
-  columns: { name: string }[];
+  columns: { name: string; type: string; nullable: boolean }[];
   rows: Record<string, string>[];
   rowSearchQuery: string;
   page: number;
