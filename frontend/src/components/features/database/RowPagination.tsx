@@ -38,7 +38,14 @@ export function RowPagination({
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious onClick={() => setPage(currentPage - 1)} />
+          <PaginationPrevious
+            className={
+              currentPage === 1
+                ? "pointer-events-none opacity-50"
+                : "cursor-pointer"
+            }
+            onClick={() => setPage(currentPage - 1)}
+          />
         </PaginationItem>
         {pages.map((pageNumber, index) => {
           const isLast = index === pages.length - 1;
@@ -63,7 +70,14 @@ export function RowPagination({
           );
         })}
         <PaginationItem>
-          <PaginationNext onClick={() => setPage(currentPage + 1)} />
+          <PaginationNext
+            className={
+              currentPage === totalPages || totalPages === 0
+                ? "pointer-events-none opacity-50"
+                : "cursor-pointer"
+            }
+            onClick={() => setPage(currentPage + 1)}
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

@@ -45,7 +45,7 @@ export function RowEditor({
     setOpenRowEditor(false);
   }
 
-  function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
+  function handleMount(monaco: Monaco) {
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemaValidation: "error",
@@ -77,7 +77,7 @@ export function RowEditor({
             height="100%"
             onMount={(editor, monaco) => {
               editorRef.current = editor;
-              handleMount(editor, monaco);
+              handleMount(monaco);
             }}
             onValidate={(markers) => {
               const errors = markers.filter((m) => m.severity === 8);
