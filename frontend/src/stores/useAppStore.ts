@@ -30,7 +30,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ db, table, page: 1, row: null, rowSearchQuery: "" });
 
     fetchGetColumns(db, table).then((columns) => set({ columns }));
-    fetchGetRows(db, table, 20, 1, "").then((res) =>
+    fetchGetRows(db, table, 16, 1, "").then((res) =>
       set({ rows: res.items, totalPages: res.totalPages }),
     );
   },
@@ -46,7 +46,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     set({ page });
 
-    fetchGetRows(db, table, 20, page, rowSearchQuery).then((res) =>
+    fetchGetRows(db, table, 16, page, rowSearchQuery).then((res) =>
       set({ rows: res.items, totalPages: res.totalPages }),
     );
   },
@@ -63,7 +63,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       return;
     }
 
-    fetchGetRows(db, table, 20, page, query).then((res) =>
+    fetchGetRows(db, table, 16, page, query).then((res) =>
       set({ rows: res.items, totalPages: res.totalPages }),
     );
   },
