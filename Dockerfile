@@ -1,5 +1,8 @@
 FROM node:24-alpine AS builder
 
+ARG PGVIEW_VERSION
+ENV VITE_PGVIEW_VERSION=$PGVIEW_VERSION
+
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@latest --activate

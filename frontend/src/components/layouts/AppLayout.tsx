@@ -6,7 +6,6 @@ import { RowPagination } from "../features/database/RowPagination";
 import { useAppStore } from "../../stores/useAppStore";
 import Logo from "../../../public/icon.svg";
 import { RowSearch } from "../features/database/RowSearch";
-import { version } from "../../../package.json";
 
 export function AppLayout() {
   const [openRowEditor, setOpenRowEditor] = useState(false);
@@ -28,7 +27,7 @@ export function AppLayout() {
             className="text-xs text-gray-400"
             href="https://github.com/catwallon/pgview"
           >
-            v{version} · Made by Catwallon
+            {import.meta.env.VITE_PGVIEW_VERSION} · Made by Catwallon
           </a>
         </div>
       </nav>
