@@ -12,6 +12,8 @@ import { TableController } from "./controllers/table.controller.js";
 import { ColumnController } from "./controllers/column.controller.js";
 import { RowController } from "./controllers/row.controller.js";
 
+console.log("Starting PgView...");
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -69,4 +71,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-fastify.listen({ port: 3000, host: "0.0.0.0" });
+fastify.listen({ port: 8080, host: "0.0.0.0" }).then(() => {
+  console.log("PgView is running on http://0.0.0.0:8080");
+});
