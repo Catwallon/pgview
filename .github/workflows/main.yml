@@ -21,7 +21,7 @@ jobs:
         with:
           images: catwallon/pgview
           tags: |
-            type=ref,event=tag
+            type=semver,pattern={{version}}
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Log in to Docker Hub
