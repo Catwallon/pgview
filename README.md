@@ -2,6 +2,8 @@
 
 A lightweight, minimal & modern web-based PostgreSQL database viewer and editor.
 
+> ⚠️ PgView is still in early development and not yet at v1.0, some features may be missing or incomplete.
+
 ![App preview](https://github.com/user-attachments/assets/84d12998-a6af-4b14-a0a2-4d8c5f999e7e)
 ![Editor preview](https://github.com/user-attachments/assets/57d6323f-d570-44ee-8eb2-c9d511ca6f82)
 
