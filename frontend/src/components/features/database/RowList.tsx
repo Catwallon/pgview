@@ -22,7 +22,15 @@ export function RowList({
       <TableHeader>
         <TableRow>
           {columns.map((col) => (
-            <TableHead key={col.name}>{col.name}</TableHead>
+            <TableHead key={col.name} className="cursor-default bg-gray-50">
+              <span>{col.name}</span>
+              <p
+                style={{ fontSize: "9px" }}
+                className="text-muted-foreground italic"
+              >
+                {col.type}
+              </p>
+            </TableHead>
           ))}
         </TableRow>
       </TableHeader>
