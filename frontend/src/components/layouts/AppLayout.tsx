@@ -31,7 +31,7 @@ export function AppLayout() {
           </a>
         </div>
       </nav>
-      <main className="ml-64 flex-1 bg-white">
+      <main className="ml-64 min-w-0 flex-1 bg-white">
         {table ? (
           <>
             <div className="p-4 border-b">
