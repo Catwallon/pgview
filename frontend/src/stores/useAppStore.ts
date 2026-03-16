@@ -9,6 +9,7 @@ export interface AppState {
   rowSearchQuery: string;
   page: number;
   totalPages: number;
+  totalRows: number;
   row: Record<string, string> | null;
   setTable: (db: string, table: string) => void;
   setPage: (page: number) => void;
@@ -23,6 +24,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   rows: [],
   page: 1,
   totalPages: 1,
+  totalRows: 0,
   row: null,
   rowSearchQuery: "",
 
@@ -31,7 +33,11 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     fetchGetColumns(db, table).then((columns) => set({ columns }));
     fetchGetRows(db, table, 16, 1, "").then((res) =>
-      set({ rows: res.items, totalPages: res.totalPages }),
+      set({
+        rows: res.items,
+        totalPages: res.totalPages,
+        totalRows: res.totalItems,
+      }),
     );
   },
 
@@ -47,7 +53,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ page });
 
     fetchGetRows(db, table, 16, page, rowSearchQuery).then((res) =>
-      set({ rows: res.items, totalPages: res.totalPages }),
+      set({
+        rows: res.items,
+        totalPages: res.totalPages,
+        totalRows: res.totalItems,
+      }),
     );
   },
 
@@ -64,7 +74,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
 
     fetchGetRows(db, table, 16, page, query).then((res) =>
-      set({ rows: res.items, totalPages: res.totalPages }),
+      set({
+        rows: res.items,
+        totalPages: res.totalPages,
+        totalRows: res.totalItems,
+      }),
     );
   },
 }));

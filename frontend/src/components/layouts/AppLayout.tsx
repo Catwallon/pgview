@@ -10,6 +10,8 @@ import { RowSearch } from "../features/database/RowSearch";
 export function AppLayout() {
   const [openRowEditor, setOpenRowEditor] = useState(false);
   const table = useAppStore((state) => state.table);
+  const rows = useAppStore((state) => state.rows);
+  const totalRows = useAppStore((state) => state.totalRows);
 
   return (
     <div className="flex min-h-screen">
@@ -34,9 +36,13 @@ export function AppLayout() {
       <main className="ml-64 min-w-0 flex-1 bg-white">
         {table ? (
           <>
-            <div className="p-4 border-b">
+            <div className="p-4">
               <RowSearch />
             </div>
+            <p className="ml-2 mb-2 text-xs muted-foreground">
+              Showing {rows.length} of {totalRows} rows
+            </p>
+            <div className="border-b" />
             <RowList setOpenRowEditor={setOpenRowEditor} />
             <div className="my-4">
               <RowPagination visiblePageCount={5} />
