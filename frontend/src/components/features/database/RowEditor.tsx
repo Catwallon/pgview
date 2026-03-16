@@ -64,7 +64,9 @@ export function RowEditor({
                 getJsonSchemaForPostgresType(col.type, col.nullable),
               ]),
             ),
-            required: ["name"],
+            required: columns
+              .filter((col) => !col.nullable)
+              .map((col) => col.name),
             additionalProperties: false,
           },
         },

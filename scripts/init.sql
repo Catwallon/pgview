@@ -44,6 +44,13 @@ CREATE TABLE posts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+insert into posts (title, content, author_id)
+select 
+    'Post ' || i,
+    'Content for post ' || i,
+    (select id from users order by random() limit 1)
+from generate_series(1, 1000) as i;
+
 \c orders-db
 
 CREATE TABLE orders (
