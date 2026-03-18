@@ -19,6 +19,17 @@ export const fetchGetRows = (
     `/databases/${dbName}/tables/${tableName}/rows?limit=${limit}&page=${page}&query=${query}`,
   );
 
+export const fetchCreateRow = (
+  dbName: string,
+  tableName: string,
+  createData: Record<string, string>,
+) =>
+  apiFetch(`/databases/${dbName}/tables/${tableName}/rows`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(createData),
+  });
+
 export const fetchEditRow = (
   dbName: string,
   tableName: string,

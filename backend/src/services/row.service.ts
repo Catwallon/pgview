@@ -75,4 +75,31 @@ export class RowService {
 
     return rowsRes.rows[0];
   }
+
+  async create(
+    dbName: string,
+    tableName: string,
+    createData: Record<string, string>,
+  ): Promise<RowResponse> {
+    const pool = new Pool({
+      host: process.env.PGVIEW_DB_HOST || "localhost",
+      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
+      user: process.env.PGVIEW_DB_USER,
+      password: process.env.PGVIEW_DB_PASSWORD,
+      database: dbName,
+    });
+
+    const [rowsRes] = await Promise.all([
+      pool.query(
+        `INSERT INTO ${tableName} (${Object.keys(createData).join(", ")}) VALUES (${Object.keys(
+          createData,
+        )
+          .map((_, i) => `$${i + 1}`)
+          .join(", ")}) RETURNING *;`,
+        Object.values(createData),
+      ),
+    ]);
+
+    return rowsRes.rows[0];
+  }
 }

@@ -6,9 +6,12 @@ import { RowPagination } from "../features/database/RowPagination";
 import { useAppStore } from "../../stores/useAppStore";
 import Logo from "../../../public/icon.svg";
 import { RowSearch } from "../features/database/RowSearch";
+import { Button } from "../ui/button";
+import { RowCreator } from "../features/database/RowCreator";
 
 export function AppLayout() {
   const [openRowEditor, setOpenRowEditor] = useState(false);
+  const [openRowCreator, setOpenRowCreator] = useState(false);
   const table = useAppStore((state) => state.table);
   const rows = useAppStore((state) => state.rows);
   const totalRows = useAppStore((state) => state.totalRows);
@@ -36,8 +39,9 @@ export function AppLayout() {
       <main className="ml-64 min-w-0 flex-1 bg-white">
         {table ? (
           <>
-            <div className="p-4">
+            <div className="p-4 flex gap-2">
               <RowSearch />
+              <Button onClick={() => setOpenRowCreator(true)}>Insert</Button>
             </div>
             <p className="ml-2 mb-2 text-xs muted-foreground">
               Showing {rows.length} of {totalRows} rows
@@ -59,6 +63,10 @@ export function AppLayout() {
       <RowEditor
         openRowEditor={openRowEditor}
         setOpenRowEditor={setOpenRowEditor}
+      />
+      <RowCreator
+        openRowCreator={openRowCreator}
+        setOpenRowCreator={setOpenRowCreator}
       />
     </div>
   );

@@ -47,4 +47,17 @@ export class RowController {
 
     reply.send(row);
   }
+
+  async create(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const { dbName, tableName } = request.params as {
+      dbName: string;
+      tableName: string;
+    };
+
+    const createData = request.body as Record<string, string>;
+
+    const row = await this.rowService.create(dbName, tableName, createData);
+
+    reply.send(row);
+  }
 }

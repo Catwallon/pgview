@@ -46,6 +46,13 @@ fastify.get(
   },
 );
 
+fastify.post(
+  "/api/databases/:dbName/tables/:tableName/rows",
+  async (request, reply) => {
+    return container.resolve(RowController).create(request, reply);
+  },
+);
+
 fastify.put(
   "/api/databases/:dbName/tables/:tableName/rows/:rowId",
   async (request, reply) => {

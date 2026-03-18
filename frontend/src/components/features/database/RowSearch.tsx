@@ -18,6 +18,7 @@ export function RowSearch() {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search..."
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+        className="w-150"
       />
       <Button onClick={handleSearch}>Search</Button>
     </div>
