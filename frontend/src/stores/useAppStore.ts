@@ -46,7 +46,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!db || !table) {
       return;
     }
-    if (page < 1 || page > totalPages) {
+    if (page < 1 || (page !== 1 && page > totalPages)) {
       return;
     }
 

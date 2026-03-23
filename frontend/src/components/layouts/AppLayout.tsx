@@ -47,7 +47,12 @@ export function AppLayout() {
               Showing {rows.length} of {totalRows} rows
             </p>
             <div className="border-b" />
-            <RowList setOpenRowEditor={setOpenRowEditor} />
+            <div
+              className="border-b flex flex-col"
+              style={{ height: "calc(100vh - 160px)" }}
+            >
+              <RowList setOpenRowEditor={setOpenRowEditor} />
+            </div>
             <div className="my-4">
               <RowPagination visiblePageCount={5} />
             </div>

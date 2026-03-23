@@ -36,8 +36,8 @@ export function RowCreator({
     }
 
     await fetchCreateRow(db, table, JSON.parse(editorRef.current.getValue()));
-    setPage(page);
 
+    setPage(page);
     setOpenRowCreator(false);
   }
 
