@@ -72,6 +72,10 @@ export function RowEditor({
         },
       ],
     });
+
+    const markers = monaco.editor.getModelMarkers();
+    const errors = markers.filter((m: editor.IMarker) => m.severity === 8);
+    setHasErrors(errors.length > 0);
   }
 
   return (
