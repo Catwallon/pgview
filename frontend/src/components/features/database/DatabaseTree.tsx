@@ -17,8 +17,14 @@ import type { DatabaseResponse } from "@/types/database.response";
 export function DatabaseTree() {
   const { data: databases } = useDatabases();
 
+  const database = useAppStore((state) => state.database);
+  const table = useAppStore((state) => state.table);
+
   return (
-    <TreeProvider>
+    <TreeProvider
+      defaultExpandedIds={database ? [database] : []}
+      selectedIds={database && table ? [`${database}-${table}`] : []}
+    >
       <TreeView>
         {databases &&
           databases.map((db) => <DatabaseNode key={db.name} db={db} />)}

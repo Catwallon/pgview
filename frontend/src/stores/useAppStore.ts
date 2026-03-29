@@ -1,3 +1,4 @@
+import { getQueryParams, updateQueryParams } from "@/util/queryParams.utils";
 import { create } from "zustand";
 
 export interface AppState {
@@ -13,18 +14,28 @@ export interface AppState {
   setQuery: (query: string) => void;
 }
 
+const initFromUrl = () => {
+  const params = getQueryParams();
+
+  return {
+    database: params.get("database") ?? "",
+    table: params.get("table") ?? "",
+  };
+};
+
 export const useAppStore = create<AppState>((set) => ({
-  database: null,
-  table: null,
+  ...initFromUrl(),
   page: 1,
   row: null,
   query: "",
 
   setDatabase: (database: string) => {
+    updateQueryParams({ database });
     set({ database, table: null, page: 1, row: null, query: "" });
   },
 
   setTable: (table: string) => {
+    updateQueryParams({ table });
     set({ table, page: 1, row: null, query: "" });
   },
 
