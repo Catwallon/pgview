@@ -1,8 +1,7 @@
 import { Pool } from "pg";
 import { inject, singleton } from "tsyringe";
-import { RowResponse } from "../types/row.response.js";
-import { Pagination } from "../types/pagination.type.js";
 import { ColumnService } from "./column.service.js";
+import { Pagination, RowResponse } from "@pgview/shared-types";
 
 @singleton()
 export class RowService {

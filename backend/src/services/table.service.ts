@@ -1,6 +1,6 @@
+import { TableResponse } from "@pgview/shared-types";
 import { Pool } from "pg";
 import { singleton } from "tsyringe";
-import { TableResponse } from "../types/table.response.js";
 
 @singleton()
 export class TableService {

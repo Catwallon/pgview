@@ -1,0 +1,14 @@
+{
+  "name": "@pgview/shared-types",
+  "main": "dist/index.ts",
+  "types": "src/index.ts",
+  "private": true,
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.32.1",
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}

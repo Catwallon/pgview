@@ -1,9 +1,11 @@
-import type { Pagination } from "@/types/pagination.type";
 import { apiFetch } from "./client";
-import type { RowResponse } from "@/types/row.response";
-import type { DatabaseResponse } from "@/types/database.response";
-import type { ColumnResponse } from "@/types/columns.response";
-import type { TableResponse } from "@/types/table.response";
+import type {
+  Pagination,
+  RowResponse,
+  DatabaseResponse,
+  ColumnResponse,
+  TableResponse,
+} from "@pgview/shared-types";
 
 export const fetchGetDatabases = (): Promise<DatabaseResponse[]> =>
   apiFetch("/databases");

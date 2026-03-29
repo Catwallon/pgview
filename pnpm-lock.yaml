@@ -30,6 +30,9 @@ importers:
         specifier: ^4.10.0
         version: 4.10.0
     devDependencies:
+      '@pgview/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       '@types/node':
         specifier: ^25.3.2
         version: 25.5.0
@@ -91,6 +94,9 @@ importers:
       '@eslint/js':
         specifier: ^9.39.1
         version: 9.39.4
+      '@pgview/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       '@types/node':
         specifier: ^24.10.1
         version: 24.12.0
@@ -133,6 +139,12 @@ importers:
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)
+
+  shared-types:
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
 
 packages:
 
@@ -3464,6 +3476,11 @@ packages:
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  typescript@6.0.2:
+    resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -7047,6 +7064,8 @@ snapshots:
       - supports-color
 
   typescript@5.9.3: {}
+
+  typescript@6.0.2: {}
 
   undici-types@7.16.0: {}
 

@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { singleton } from "tsyringe";
-import { ColumnResponse } from "../types/column.response.js";
+import type { ColumnResponse } from "@pgview/shared-types";
 
 @singleton()
 export class ColumnService {

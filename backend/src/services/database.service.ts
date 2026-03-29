@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import type { DatabaseResponse } from "../types/database.response.js";
+import type { DatabaseResponse } from "@pgview/shared-types";
 import { singleton } from "tsyringe";
 
 @singleton()

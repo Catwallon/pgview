@@ -11,6 +11,7 @@ COPY pnpm-workspace.yaml ./
 COPY package.json pnpm-lock.yaml ./
 COPY backend/package.json ./backend/
 COPY frontend/package.json ./frontend/
+COPY shared-types/package.json ./shared-types/
 
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 
@@ -22,8 +23,8 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/backend/dist   ./backend/dist
-COPY --from=builder /app/frontend/dist  ./frontend/dist
+COPY --from=builder /app/backend/dist ./backend/dist
+COPY --from=builder /app/frontend/dist ./frontend/dist
 COPY --from=builder /app/backend-deploy/node_modules ./backend/node_modules
 COPY --from=builder /app/backend-deploy/package.json ./backend/package.json
 
