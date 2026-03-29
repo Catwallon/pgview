@@ -14,16 +14,14 @@ import { getJsonSchemaForPostgresType } from "@/utils/postgresJsonSchema";
 import { generateDefaultValueJsonFromColumns } from "@/utils/rowDefaultJson";
 import { useColumns } from "@/hooks/useColumns";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUIStore } from "@/stores/useUIStore";
 
-export function RowCreator({
-  openRowCreator,
-  setOpenRowCreator,
-}: {
-  openRowCreator: boolean;
-  setOpenRowCreator: (v: boolean) => void;
-}) {
+export function RowCreator() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [hasErrors, setHasErrors] = useState(false);
+
+  const openRowCreator = useUIStore((state) => state.openRowCreator);
+  const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
 
   const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);

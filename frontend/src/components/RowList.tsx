@@ -9,12 +9,10 @@ import {
 import { useColumns } from "@/hooks/useColumns";
 import { useRows } from "@/hooks/useRows";
 import { useAppStore } from "@/stores/useAppStore";
+import { useUIStore } from "@/stores/useUIStore";
 
-export function RowList({
-  setOpenRowEditor,
-}: {
-  setOpenRowEditor: (v: boolean) => void;
-}) {
+export function RowList() {
+  const setOpenRowEditor = useUIStore((state) => state.setOpenRowEditor);
   const { data: columns } = useColumns();
   const { data: rows } = useRows();
   const setRow = useAppStore((state) => state.setRow);

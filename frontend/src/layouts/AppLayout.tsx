@@ -1,7 +1,6 @@
 import { DatabaseTree } from "@/components/DatabaseTree";
 import { RowList } from "@/components/RowList";
 import { RowEditor } from "@/components/RowEditor";
-import { useState } from "react";
 import { RowPagination } from "@/components/RowPagination";
 import { useAppStore } from "@/stores/useAppStore";
 import Logo from "@/assets/logo.svg";
@@ -9,10 +8,10 @@ import { RowSearch } from "@/components/RowSearch";
 import { Button } from "@/components/ui/button";
 import { RowCreator } from "@/components/RowCreator";
 import { useRows } from "@/hooks/useRows";
+import { useUIStore } from "@/stores/useUIStore";
 
 export function AppLayout() {
-  const [openRowEditor, setOpenRowEditor] = useState(false);
-  const [openRowCreator, setOpenRowCreator] = useState(false);
+  const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
   const table = useAppStore((state) => state.table);
 
   const { data: rows } = useRows();
@@ -52,7 +51,7 @@ export function AppLayout() {
               className="border-b flex flex-col"
               style={{ height: "calc(100vh - 160px)" }}
             >
-              <RowList setOpenRowEditor={setOpenRowEditor} />
+              <RowList />
             </div>
             <div className="my-4">
               <RowPagination visiblePageCount={5} />
@@ -66,14 +65,8 @@ export function AppLayout() {
           </div>
         )}
       </main>
-      <RowEditor
-        openRowEditor={openRowEditor}
-        setOpenRowEditor={setOpenRowEditor}
-      />
-      <RowCreator
-        openRowCreator={openRowCreator}
-        setOpenRowCreator={setOpenRowCreator}
-      />
+      <RowEditor />
+      <RowCreator />
     </div>
   );
 }
