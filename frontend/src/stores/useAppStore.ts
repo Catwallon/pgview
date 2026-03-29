@@ -52,6 +52,6 @@ export const useAppStore = create<AppState>((set) => ({
   },
 
   setQuery: (query: string) => {
-    set({ query });
+    set({ query, page: 1 });
   },
 }));
