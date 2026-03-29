@@ -1,25 +1,29 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppStore } from "@/stores/useAppStore";
+import { useEffect, useState } from "react";
 
 export function RowSearch() {
   const query = useAppStore((state) => state.query);
   const setQuery = useAppStore((state) => state.setQuery);
 
-  const handleSearch = () => {
-    setQuery(query);
-  };
+  const [localQuery, setLocalQuery] = useState(query);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setQuery(localQuery);
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [localQuery, setQuery]);
 
   return (
     <div className="flex gap-2">
       <Input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={localQuery}
+        onChange={(e) => setLocalQuery(e.target.value)}
         placeholder="Search..."
-        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         className="w-150"
       />
-      <Button onClick={handleSearch}>Search</Button>
     </div>
   );
 }
