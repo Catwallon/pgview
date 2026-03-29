@@ -8,13 +8,14 @@ import Logo from "../../../public/icon.svg";
 import { RowSearch } from "../features/database/RowSearch";
 import { Button } from "../ui/button";
 import { RowCreator } from "../features/database/RowCreator";
+import { useRows } from "@/hooks/useRows";
 
 export function AppLayout() {
   const [openRowEditor, setOpenRowEditor] = useState(false);
   const [openRowCreator, setOpenRowCreator] = useState(false);
   const table = useAppStore((state) => state.table);
-  const rows = useAppStore((state) => state.rows);
-  const totalRows = useAppStore((state) => state.totalRows);
+
+  const { data: rows } = useRows();
 
   return (
     <div className="flex min-h-screen">
@@ -44,7 +45,7 @@ export function AppLayout() {
               <Button onClick={() => setOpenRowCreator(true)}>Insert</Button>
             </div>
             <p className="ml-2 mb-2 text-xs muted-foreground">
-              Showing {rows.length} of {totalRows} rows
+              Showing {rows?.items.length} of {rows?.totalItems} rows
             </p>
             <div className="border-b" />
             <div

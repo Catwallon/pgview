@@ -11,6 +11,8 @@ import { useAppStore } from "@/stores/useAppStore";
 import { fetchEditRow } from "@/lib/api/database";
 import { useRef, useState } from "react";
 import { getJsonSchemaForPostgresType } from "@/util/postgresJsonSchema";
+import { useColumns } from "@/hooks/useColumns";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function RowEditor({
   openRowEditor,
@@ -19,35 +21,36 @@ export function RowEditor({
   openRowEditor: boolean;
   setOpenRowEditor: (v: boolean) => void;
 }) {
+  const queryClient = useQueryClient();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [hasErrors, setHasErrors] = useState(false);
 
-  const db = useAppStore((state) => state.db);
+  const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);
   const row = useAppStore((state) => state.row);
-  const page = useAppStore((state) => state.page);
-  const columns = useAppStore((state) => state.columns);
-
-  const setPage = useAppStore((state) => state.setPage);
+  const { data: columns } = useColumns();
 
   async function save() {
-    if (!db || !table || !row || !editorRef.current) {
+    if (!database || !table || !row || !editorRef.current) {
       return;
     }
 
     await fetchEditRow(
-      db,
+      database,
       table,
       row.id,
       JSON.parse(editorRef.current.getValue()),
     );
-    setPage(page);
+
+    queryClient.invalidateQueries({ queryKey: ["rows"] });
 
     setOpenRowEditor(false);
   }
 
   function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
     editorRef.current = editor;
+
+    if (!columns) return null;
 
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,

@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppStore } from "@/stores/useAppStore";
-import { useState } from "react";
 
 export function RowSearch() {
-  const [query, setQuery] = useState("");
-  const setRowSearchQuery = useAppStore((state) => state.setRowSearchQuery);
+  const query = useAppStore((state) => state.query);
+  const setQuery = useAppStore((state) => state.setQuery);
 
   const handleSearch = () => {
-    setRowSearchQuery(query);
+    setQuery(query);
   };
 
   return (
