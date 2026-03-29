@@ -7,7 +7,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../../ui/pagination";
+} from "@/components/ui/pagination";
 import { useAppStore } from "@/stores/useAppStore";
 
 export function RowPagination({

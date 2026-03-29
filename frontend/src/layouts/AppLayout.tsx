@@ -1,13 +1,13 @@
-import { DatabaseTree } from "@/components/features/database/DatabaseTree";
-import { RowList } from "../features/database/RowList";
-import { RowEditor } from "../features/database/RowEditor";
+import { DatabaseTree } from "@/components/DatabaseTree";
+import { RowList } from "@/components/RowList";
+import { RowEditor } from "@/components/RowEditor";
 import { useState } from "react";
-import { RowPagination } from "../features/database/RowPagination";
-import { useAppStore } from "../../stores/useAppStore";
-import Logo from "../../../public/icon.svg";
-import { RowSearch } from "../features/database/RowSearch";
-import { Button } from "../ui/button";
-import { RowCreator } from "../features/database/RowCreator";
+import { RowPagination } from "@/components/RowPagination";
+import { useAppStore } from "@/stores/useAppStore";
+import Logo from "@/assets/logo.svg";
+import { RowSearch } from "@/components/RowSearch";
+import { Button } from "@/components/ui/button";
+import { RowCreator } from "@/components/RowCreator";
 import { useRows } from "@/hooks/useRows";
 
 export function AppLayout() {

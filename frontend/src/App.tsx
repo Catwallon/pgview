@@ -1,4 +1,4 @@
-import { AppLayout } from "./components/layouts/AppLayout";
+import { AppLayout } from "./layouts/AppLayout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();

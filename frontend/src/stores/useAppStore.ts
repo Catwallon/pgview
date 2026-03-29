@@ -1,7 +1,7 @@
-import { getQueryParams, updateQueryParams } from "@/util/queryParams.utils";
+import { getQueryParams, updateQueryParams } from "@/utils/queryParams";
 import { create } from "zustand";
 
-export interface AppState {
+interface AppState {
   database: string | null;
   table: string | null;
   page: number;

@@ -8,44 +8,44 @@ import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
-import { fetchEditRow } from "@/lib/api/database";
+import { fetchCreateRow } from "@/lib/api/database";
 import { useRef, useState } from "react";
-import { getJsonSchemaForPostgresType } from "@/util/postgresJsonSchema";
+import { getJsonSchemaForPostgresType } from "@/utils/postgresJsonSchema";
+import { generateDefaultValueJsonFromColumns } from "@/utils/rowDefaultJson";
 import { useColumns } from "@/hooks/useColumns";
 import { useQueryClient } from "@tanstack/react-query";
 
-export function RowEditor({
-  openRowEditor,
-  setOpenRowEditor,
+export function RowCreator({
+  openRowCreator,
+  setOpenRowCreator,
 }: {
-  openRowEditor: boolean;
-  setOpenRowEditor: (v: boolean) => void;
+  openRowCreator: boolean;
+  setOpenRowCreator: (v: boolean) => void;
 }) {
-  const queryClient = useQueryClient();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [hasErrors, setHasErrors] = useState(false);
 
   const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);
-  const row = useAppStore((state) => state.row);
   const { data: columns } = useColumns();
+  const queryClient = useQueryClient();
 
-  async function save() {
-    if (!database || !table || !row || !editorRef.current) {
+  async function insert() {
+    if (!database || !table || !editorRef.current) {
       return;
     }
 
-    await fetchEditRow(
+    await fetchCreateRow(
       database,
       table,
-      row.id,
       JSON.parse(editorRef.current.getValue()),
     );
 
-    queryClient.invalidateQueries({ queryKey: ["rows"] });
-
-    setOpenRowEditor(false);
+    queryClient.invalidateQueries({ queryKey: ["rows", database, table] });
+    setOpenRowCreator(false);
   }
+
+  if (!columns) return null;
 
   function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
     editorRef.current = editor;
@@ -75,17 +75,13 @@ export function RowEditor({
         },
       ],
     });
-
-    const markers = monaco.editor.getModelMarkers();
-    const errors = markers.filter((m: editor.IMarker) => m.severity === 8);
-    setHasErrors(errors.length > 0);
   }
 
   return (
-    <Dialog open={openRowEditor} onOpenChange={setOpenRowEditor}>
+    <Dialog open={openRowCreator} onOpenChange={setOpenRowCreator}>
       <DialogContent className="w-130 h-150">
         <DialogHeader>
-          <DialogTitle>Edit row</DialogTitle>
+          <DialogTitle>Insert row</DialogTitle>
         </DialogHeader>
         <div className="border rounded-xl p-4">
           <Editor
@@ -97,7 +93,7 @@ export function RowEditor({
             }}
             theme="vs"
             defaultLanguage="json"
-            defaultValue={JSON.stringify(row, null, 2)}
+            defaultValue={generateDefaultValueJsonFromColumns(columns)}
             options={{
               glyphMargin: false,
               folding: false,
@@ -110,8 +106,8 @@ export function RowEditor({
             }}
           />
         </div>
-        <Button className="mt-4 ml-auto" onClick={save} disabled={hasErrors}>
-          Save
+        <Button className="mt-4 ml-auto" onClick={insert} disabled={hasErrors}>
+          Insert
         </Button>
       </DialogContent>
     </Dialog>
