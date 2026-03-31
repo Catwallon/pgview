@@ -101,4 +101,26 @@ export class RowService {
 
     return rowsRes.rows[0];
   }
+
+  async delete(
+    dbName: string,
+    tableName: string,
+    rowId: string,
+  ): Promise<RowResponse> {
+    const pool = new Pool({
+      host: process.env.PGVIEW_DB_HOST || "localhost",
+      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
+      user: process.env.PGVIEW_DB_USER,
+      password: process.env.PGVIEW_DB_PASSWORD,
+      database: dbName,
+    });
+
+    const [rowsRes] = await Promise.all([
+      pool.query(`DELETE FROM ${tableName} WHERE id = $1 RETURNING *;`, [
+        rowId,
+      ]),
+    ]);
+
+    return rowsRes.rows[0];
+  }
 }

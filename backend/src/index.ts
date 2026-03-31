@@ -60,6 +60,13 @@ fastify.put(
   },
 );
 
+fastify.delete(
+  "/api/databases/:dbName/tables/:tableName/rows/:rowId",
+  async (request, reply) => {
+    return container.resolve(RowController).delete(request, reply);
+  },
+);
+
 fastify.setErrorHandler(errorHandler);
 
 if (process.env.NODE_ENV === "production") {

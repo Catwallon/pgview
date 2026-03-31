@@ -52,3 +52,12 @@ export const fetchEditRow = (
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updateData),
   });
+
+export const fetchDeleteRow = (
+  dbName: string,
+  tableName: string,
+  rowId: string,
+): Promise<RowResponse> =>
+  apiFetch(`/databases/${dbName}/tables/${tableName}/rows/${rowId}`, {
+    method: "DELETE",
+  });

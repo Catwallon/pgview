@@ -13,6 +13,7 @@ import { getJsonSchemaForPostgresType } from "@/utils/postgresJsonSchema";
 import { useColumns } from "@/hooks/useColumns";
 import { useUIStore } from "@/stores/useUIStore";
 import { useEditRow } from "@/hooks/useEditRow";
+import { useDeleteRow } from "@/hooks/useDeleteRow";
 import { Spinner } from "./ui/spinner";
 
 export function RowEditor() {
@@ -25,6 +26,7 @@ export function RowEditor() {
   const row = useAppStore((state) => state.row);
   const { data: columns } = useColumns();
   const editRow = useEditRow();
+  const deleteRow = useDeleteRow();
 
   function edit() {
     if (!database || !table || !row || !editorRef.current) {
@@ -37,6 +39,23 @@ export function RowEditor() {
         table,
         id: row.id,
         data: JSON.parse(editorRef.current.getValue()),
+      },
+      {
+        onSuccess: () => setOpenRowEditor(false),
+      },
+    );
+  }
+
+  function delete_() {
+    if (!database || !table || !row || !editorRef.current) {
+      return;
+    }
+
+    deleteRow.mutate(
+      {
+        database,
+        table,
+        id: row.id,
       },
       {
         onSuccess: () => setOpenRowEditor(false),
@@ -107,13 +126,23 @@ export function RowEditor() {
             }}
           />
         </div>
-        <Button
-          className="mt-4 ml-auto w-20"
-          onClick={edit}
-          disabled={hasErrors || editRow.isPending}
-        >
-          {editRow.isPending ? <Spinner /> : "Save"}
-        </Button>
+        <div className="flex justify-between mt-4 ">
+          <Button
+            variant="secondary"
+            className="w-20"
+            onClick={delete_}
+            disabled={deleteRow.isPending}
+          >
+            Delete
+          </Button>
+          <Button
+            className="w-20"
+            onClick={edit}
+            disabled={hasErrors || editRow.isPending}
+          >
+            {editRow.isPending ? <Spinner /> : "Save"}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

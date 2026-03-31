@@ -60,4 +60,16 @@ export class RowController {
 
     reply.send(row);
   }
+
+  async delete(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const { dbName, tableName, rowId } = request.params as {
+      dbName: string;
+      tableName: string;
+      rowId: string;
+    };
+
+    const row = await this.rowService.delete(dbName, tableName, rowId);
+
+    reply.send(row);
+  }
 }
