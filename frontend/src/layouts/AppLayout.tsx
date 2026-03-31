@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { RowCreator } from "@/components/RowCreator";
 import { useRows } from "@/hooks/useRows";
 import { useUIStore } from "@/stores/useUIStore";
+import { Plus } from "lucide-react";
 
 export function AppLayout() {
   const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
@@ -41,7 +42,10 @@ export function AppLayout() {
           <>
             <div className="p-4 flex gap-2">
               <RowSearch />
-              <Button onClick={() => setOpenRowCreator(true)}>Insert</Button>
+              <Button onClick={() => setOpenRowCreator(true)}>
+                <Plus />
+                Insert
+              </Button>
             </div>
             <p className="ml-2 mb-2 text-xs muted-foreground">
               Showing {rows?.items.length} of {rows?.totalItems} rows
