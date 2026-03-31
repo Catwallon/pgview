@@ -76,12 +76,18 @@ export function RowCreator() {
   }
 
   return (
-    <Dialog open={openRowCreator} onOpenChange={setOpenRowCreator}>
-      <DialogContent className="w-130 h-150">
+    <Dialog
+      open={openRowCreator}
+      onOpenChange={(open) => {
+        if (!open) insertRow.reset();
+        setOpenRowCreator(open);
+      }}
+    >
+      <DialogContent className="w-130">
         <DialogHeader>
           <DialogTitle>Insert row</DialogTitle>
         </DialogHeader>
-        <div className="border rounded-xl p-4">
+        <div className="border rounded-xl p-4 h-100">
           <Editor
             height="100%"
             onMount={handleMount}
@@ -104,6 +110,9 @@ export function RowCreator() {
             }}
           />
         </div>
+        {insertRow.error && (
+          <p className="text-red-800">{insertRow.error.message}</p>
+        )}
         <Button
           className="mt-4 ml-auto w-20"
           onClick={insert}

@@ -41,7 +41,10 @@ export function RowEditor() {
         data: JSON.parse(editorRef.current.getValue()),
       },
       {
-        onSuccess: () => setOpenRowEditor(false),
+        onSuccess: () => {
+          setOpenRowEditor(false);
+          deleteRow.reset();
+        },
       },
     );
   }
@@ -58,7 +61,10 @@ export function RowEditor() {
         id: row.id,
       },
       {
-        onSuccess: () => setOpenRowEditor(false),
+        onSuccess: () => {
+          setOpenRowEditor(false);
+          editRow.reset();
+        },
       },
     );
   }
@@ -98,12 +104,21 @@ export function RowEditor() {
   }
 
   return (
-    <Dialog open={openRowEditor} onOpenChange={setOpenRowEditor}>
-      <DialogContent className="w-130 h-150">
+    <Dialog
+      open={openRowEditor}
+      onOpenChange={(open) => {
+        if (!open) {
+          editRow.reset();
+          deleteRow.reset();
+        }
+        setOpenRowEditor(open);
+      }}
+    >
+      <DialogContent className="w-130">
         <DialogHeader>
           <DialogTitle>Edit row</DialogTitle>
         </DialogHeader>
-        <div className="border rounded-xl p-4">
+        <div className="border rounded-xl p-4 h-100">
           <Editor
             height="100%"
             onMount={handleMount}
@@ -126,6 +141,12 @@ export function RowEditor() {
             }}
           />
         </div>
+        {editRow.error && (
+          <p className="text-red-800">{editRow.error.message}</p>
+        )}
+        {deleteRow.error && (
+          <p className="text-red-800">{deleteRow.error.message}</p>
+        )}
         <div className="flex justify-between mt-4 ">
           <Button
             variant="secondary"
