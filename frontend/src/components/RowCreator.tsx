@@ -8,39 +8,38 @@ import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
-import { fetchCreateRow } from "@/lib/api/database";
 import { useRef, useState } from "react";
 import { getJsonSchemaForPostgresType } from "@/utils/postgresJsonSchema";
 import { generateDefaultValueJsonFromColumns } from "@/utils/rowDefaultJson";
 import { useColumns } from "@/hooks/useColumns";
-import { useQueryClient } from "@tanstack/react-query";
 import { useUIStore } from "@/stores/useUIStore";
+import { useInsertRow } from "@/hooks/useInsertRow";
 
 export function RowCreator() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [hasErrors, setHasErrors] = useState(false);
-
   const openRowCreator = useUIStore((state) => state.openRowCreator);
   const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
-
   const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);
   const { data: columns } = useColumns();
-  const queryClient = useQueryClient();
+  const insertRow = useInsertRow();
 
-  async function insert() {
+  function insert() {
     if (!database || !table || !editorRef.current) {
       return;
     }
 
-    await fetchCreateRow(
-      database,
-      table,
-      JSON.parse(editorRef.current.getValue()),
+    insertRow.mutate(
+      {
+        database,
+        table,
+        data: JSON.parse(editorRef.current.getValue()),
+      },
+      {
+        onSuccess: () => setOpenRowCreator(false),
+      },
     );
-
-    queryClient.invalidateQueries({ queryKey: ["rows", database, table] });
-    setOpenRowCreator(false);
   }
 
   if (!columns) return null;

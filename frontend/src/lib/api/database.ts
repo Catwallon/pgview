@@ -30,7 +30,7 @@ export const fetchGetRows = (
     `/databases/${dbName}/tables/${tableName}/rows?limit=${limit}&page=${page}&query=${query}`,
   );
 
-export const fetchCreateRow = (
+export const fetchInsertRow = (
   dbName: string,
   tableName: string,
   createData: Record<string, string>,
