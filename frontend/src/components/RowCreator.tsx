@@ -14,6 +14,7 @@ import { generateDefaultValueJsonFromColumns } from "@/utils/rowDefaultJson";
 import { useColumns } from "@/hooks/useColumns";
 import { useUIStore } from "@/stores/useUIStore";
 import { useInsertRow } from "@/hooks/useInsertRow";
+import { Spinner } from "./ui/spinner";
 
 export function RowCreator() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -103,8 +104,12 @@ export function RowCreator() {
             }}
           />
         </div>
-        <Button className="mt-4 ml-auto" onClick={insert} disabled={hasErrors}>
-          Insert
+        <Button
+          className="mt-4 ml-auto w-20"
+          onClick={insert}
+          disabled={hasErrors || insertRow.isPending}
+        >
+          {insertRow.isPending ? <Spinner /> : "Insert"}
         </Button>
       </DialogContent>
     </Dialog>

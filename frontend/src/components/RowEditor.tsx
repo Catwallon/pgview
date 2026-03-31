@@ -13,6 +13,7 @@ import { getJsonSchemaForPostgresType } from "@/utils/postgresJsonSchema";
 import { useColumns } from "@/hooks/useColumns";
 import { useUIStore } from "@/stores/useUIStore";
 import { useEditRow } from "@/hooks/useEditRow";
+import { Spinner } from "./ui/spinner";
 
 export function RowEditor() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -106,8 +107,12 @@ export function RowEditor() {
             }}
           />
         </div>
-        <Button className="mt-4 ml-auto" onClick={edit} disabled={hasErrors}>
-          Save
+        <Button
+          className="mt-4 ml-auto w-20"
+          onClick={edit}
+          disabled={hasErrors || editRow.isPending}
+        >
+          {editRow.isPending ? <Spinner /> : "Save"}
         </Button>
       </DialogContent>
     </Dialog>
