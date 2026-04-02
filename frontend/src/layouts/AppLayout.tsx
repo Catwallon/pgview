@@ -9,11 +9,14 @@ import { Button } from "@/components/ui/button";
 import { RowCreator } from "@/components/RowCreator";
 import { useRows } from "@/hooks/useRows";
 import { useUIStore } from "@/stores/useUIStore";
-import { Plus } from "lucide-react";
+import { Plus, RefreshCw } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function AppLayout() {
   const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
+  const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);
+  const queryClient = useQueryClient();
 
   const { data: rows } = useRows();
 
@@ -45,6 +48,16 @@ export function AppLayout() {
               <Button onClick={() => setOpenRowCreator(true)}>
                 <Plus />
                 Insert
+              </Button>
+              <Button
+                onClick={() =>
+                  queryClient.invalidateQueries({
+                    queryKey: ["rows", database, table],
+                  })
+                }
+              >
+                <RefreshCw />
+                Refresh
               </Button>
             </div>
             <p className="ml-2 mb-2 text-xs muted-foreground">
