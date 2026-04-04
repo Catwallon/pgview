@@ -9,12 +9,12 @@ import type { editor } from "monaco-editor";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
 import { useRef, useState } from "react";
-import { getJsonSchemaForPostgresType } from "@/utils/postgresJsonSchema";
 import { useColumns } from "@/hooks/useColumns";
 import { useUIStore } from "@/stores/useUIStore";
 import { useEditRow } from "@/hooks/useEditRow";
 import { useDeleteRow } from "@/hooks/useDeleteRow";
 import { Spinner } from "./ui/spinner";
+import { schemaFromColumns } from "@/utils/schemaFromColumns";
 
 export function RowEditor() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -81,19 +81,7 @@ export function RowEditor() {
         {
           uri: "https://schema.json",
           fileMatch: ["*"],
-          schema: {
-            type: "object",
-            properties: Object.fromEntries(
-              columns.map((col) => [
-                col.name,
-                getJsonSchemaForPostgresType(col.type, col.nullable),
-              ]),
-            ),
-            required: columns
-              .filter((col) => !col.nullable)
-              .map((col) => col.name),
-            additionalProperties: false,
-          },
+          schema: schemaFromColumns(columns),
         },
       ],
     });

@@ -8,7 +8,6 @@
     "declaration": true,
     "declarationMap": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
     "strict": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
