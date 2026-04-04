@@ -9,12 +9,12 @@ import type { editor } from "monaco-editor";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
 import { useRef, useState } from "react";
-import { generateDefaultValueJsonFromColumns } from "@/utils/rowDefaultJson";
 import { useColumns } from "@/hooks/useColumns";
 import { useUIStore } from "@/stores/useUIStore";
 import { useInsertRow } from "@/hooks/useInsertRow";
 import { Spinner } from "./ui/spinner";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
+import { defaultFromColumns } from "@/utils/defaultFromColumns";
 
 export function RowCreator() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -85,7 +85,7 @@ export function RowCreator() {
             }}
             theme="vs"
             defaultLanguage="json"
-            defaultValue={generateDefaultValueJsonFromColumns(columns)}
+            defaultValue={defaultFromColumns(columns)}
             options={{
               glyphMargin: false,
               folding: false,

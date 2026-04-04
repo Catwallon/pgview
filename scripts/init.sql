@@ -55,7 +55,7 @@ from generate_series(1, 1000) as i;
 
 CREATE TABLE test (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    int8 BIGINT NOT NULL,
+    int8 BIGINT NOT NULL DEFAULT 0,
     serial8 SERIAL8 NOT NULL,
     bit BIT(8) NOT NULL,
     varbit VARBIT(8) NOT NULL,
@@ -236,12 +236,12 @@ INSERT INTO test (
     '00000000',
     '0',
     false,
-    '((0,0),(0,0))',
+    '(0,0),(0,0)',
     '\x',
     'Hello PG',
     '',
     '2001:db8::/32',
-    '<(0,0),1>',
+    '<(0,0),0>',
     '4713-01-01 BC',
     '-1.7976931348623157e+308',
     '2001:db8::1',
