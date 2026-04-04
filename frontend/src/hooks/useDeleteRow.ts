@@ -14,8 +14,8 @@ export function useDeleteRow() {
       table: string;
       id: string;
     }) => fetchDeleteRow(database, table, id),
-    onSuccess: (_, { database, table }) => {
-      queryClient.invalidateQueries({ queryKey: ["rows", database, table] });
+    onSuccess: (_, { database }) => {
+      queryClient.invalidateQueries({ queryKey: ["rows", database] });
     },
   });
 }

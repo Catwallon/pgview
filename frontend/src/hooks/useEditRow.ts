@@ -16,8 +16,8 @@ export function useEditRow() {
       id: string;
       data: Record<string, string>;
     }) => fetchEditRow(database, table, id, data),
-    onSuccess: (_, { database, table }) => {
-      queryClient.invalidateQueries({ queryKey: ["rows", database, table] });
+    onSuccess: (_, { database }) => {
+      queryClient.invalidateQueries({ queryKey: ["rows", database] });
     },
   });
 }
