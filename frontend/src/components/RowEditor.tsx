@@ -17,6 +17,7 @@ import { Spinner } from "./ui/spinner";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { CircleAlert } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export function RowEditor() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -29,6 +30,7 @@ export function RowEditor() {
   const { data: columns } = useColumns();
   const editRow = useEditRow();
   const deleteRow = useDeleteRow();
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   function edit() {
     if (!database || !table || !row || !editorRef.current) {
@@ -169,13 +171,29 @@ export function RowEditor() {
           >
             Delete
           </Button>
-          <Button
-            className="w-20"
-            onClick={edit}
-            disabled={hasErrors || editRow.isPending}
+          <Tooltip
+            open={hasErrors && tooltipOpen}
+            onOpenChange={setTooltipOpen}
           >
-            {editRow.isPending ? <Spinner /> : "Save"}
-          </Button>
+            <TooltipTrigger asChild>
+              <span
+                className="inline-block cursor-not-allowed"
+                onMouseEnter={() => setTooltipOpen(true)}
+                onMouseLeave={() => setTooltipOpen(false)}
+              >
+                <Button
+                  className="w-20"
+                  disabled={hasErrors || editRow.isPending}
+                  onClick={edit}
+                >
+                  {editRow.isPending ? <Spinner /> : "Save"}
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>You have some errors in your JSON</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </DialogContent>
     </Dialog>

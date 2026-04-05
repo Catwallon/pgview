@@ -17,6 +17,7 @@ import { schemaFromColumns } from "@/utils/schemaFromColumns";
 import { defaultFromColumns } from "@/utils/defaultFromColumns";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { CircleAlert } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export function RowCreator() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -27,6 +28,7 @@ export function RowCreator() {
   const table = useAppStore((state) => state.table);
   const { data: columns } = useColumns();
   const insertRow = useInsertRow();
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   function insert() {
     if (!database || !table || !editorRef.current) {
@@ -63,13 +65,19 @@ export function RowCreator() {
         },
       ],
     });
+
+    const markers = monaco.editor.getModelMarkers();
+    const errors = markers.filter((m: editor.IMarker) => m.severity === 8);
+    setHasErrors(errors.length > 0);
   }
 
   return (
     <Dialog
       open={openRowCreator}
       onOpenChange={(open) => {
-        if (!open) insertRow.reset();
+        if (!open) {
+          insertRow.reset();
+        }
         setOpenRowCreator(open);
       }}
     >
@@ -120,13 +128,31 @@ export function RowCreator() {
             </AlertDescription>
           </Alert>
         )}
-        <Button
-          className="mt-4 ml-auto w-20"
-          onClick={insert}
-          disabled={hasErrors || insertRow.isPending}
-        >
-          {insertRow.isPending ? <Spinner /> : "Insert"}
-        </Button>
+        <div className="flex justify-end mt-4">
+          <Tooltip
+            open={hasErrors && tooltipOpen}
+            onOpenChange={setTooltipOpen}
+          >
+            <TooltipTrigger asChild>
+              <span
+                className="inline-block cursor-not-allowed"
+                onMouseEnter={() => setTooltipOpen(true)}
+                onMouseLeave={() => setTooltipOpen(false)}
+              >
+                <Button
+                  className="w-20"
+                  onClick={insert}
+                  disabled={hasErrors || insertRow.isPending}
+                >
+                  {insertRow.isPending ? <Spinner /> : "Insert"}
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>You have some errors in your JSON</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </DialogContent>
     </Dialog>
   );
