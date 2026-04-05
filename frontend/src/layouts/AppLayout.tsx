@@ -13,14 +13,16 @@ import { Plus, RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
+import { useState } from "react";
 
 export function AppLayout() {
   const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
   const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);
   const queryClient = useQueryClient();
-
-  const { data: rows } = useRows();
+  const rows = useRows();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   return (
     <div className="flex min-h-screen">
@@ -52,19 +54,29 @@ export function AppLayout() {
                 Insert
               </Button>
               <Button
+                className="w-26"
+                disabled={isRefreshing}
                 onClick={() => {
-                  queryClient.invalidateQueries({
-                    queryKey: ["rows", database, table],
+                  setIsRefreshing(true);
+                  Promise.all([
+                    queryClient.invalidateQueries({
+                      queryKey: ["rows", database, table],
+                    }),
+                    queryClient.invalidateQueries({
+                      queryKey: ["columns", database, table],
+                    }),
+                  ]).then(() => {
+                    setIsRefreshing(false);
+                    toast.success("Table refreshed");
                   });
-                  toast.success("Data refreshed");
                 }}
               >
                 <RefreshCw />
-                Refresh
+                {isRefreshing ? <Spinner /> : "Refresh"}
               </Button>
             </div>
             <p className="ml-2 mb-2 text-xs muted-foreground">
-              Showing {rows?.items.length} of {rows?.totalItems} rows
+              Showing {rows.data?.items.length} of {rows.data?.totalItems} rows
             </p>
             <div className="border-b" />
             <div
