@@ -10,12 +10,21 @@ import { useColumns } from "@/hooks/useColumns";
 import { useRows } from "@/hooks/useRows";
 import { useAppStore } from "@/stores/useAppStore";
 import { useUIStore } from "@/stores/useUIStore";
+import { formatDisplayValue } from "@/utils/formatDisplayValue";
 
 export function RowList() {
   const setOpenRowEditor = useUIStore((state) => state.setOpenRowEditor);
   const { data: columns } = useColumns();
   const { data: rows } = useRows();
   const setRow = useAppStore((state) => state.setRow);
+
+  const isEmpty = (value: unknown) => {
+    return String(value).length === 0;
+  };
+
+  const isNull = (value: unknown) => {
+    return value === null;
+  };
 
   return (
     <div className="flex flex-col h-full overflow-x-auto">
@@ -46,8 +55,23 @@ export function RowList() {
                   setRow(row);
                 }}
               >
-                {Object.entries(row).map(([key, value]) => (
-                  <TableCell key={key}>{String(value)}</TableCell>
+                {Object.entries(row).map(([key, value], index) => (
+                  <TableCell key={key}>
+                    <p
+                      className={
+                        isEmpty(value) || isNull(value)
+                          ? "text-muted-foreground italic"
+                          : ""
+                      }
+                    >
+                      {isEmpty(value)
+                        ? "empty"
+                        : isNull(value)
+                          ? "null"
+                          : columns &&
+                            formatDisplayValue(columns[index], value)}
+                    </p>
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
