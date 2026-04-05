@@ -1,5 +1,6 @@
 import { fetchDeleteRow } from "@/lib/api/database";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export function useDeleteRow() {
   const queryClient = useQueryClient();
@@ -16,6 +17,7 @@ export function useDeleteRow() {
     }) => fetchDeleteRow(database, table, id),
     onSuccess: (_, { database }) => {
       queryClient.invalidateQueries({ queryKey: ["rows", database] });
+      toast.success("Row deleted successfully");
     },
   });
 }

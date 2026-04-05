@@ -11,6 +11,8 @@ import { useRows } from "@/hooks/useRows";
 import { useUIStore } from "@/stores/useUIStore";
 import { Plus, RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export function AppLayout() {
   const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
@@ -50,11 +52,12 @@ export function AppLayout() {
                 Insert
               </Button>
               <Button
-                onClick={() =>
+                onClick={() => {
                   queryClient.invalidateQueries({
                     queryKey: ["rows", database, table],
-                  })
-                }
+                  });
+                  toast.success("Data refreshed");
+                }}
               >
                 <RefreshCw />
                 Refresh
@@ -84,6 +87,7 @@ export function AppLayout() {
       </main>
       <RowEditor />
       <RowCreator />
+      <Toaster toastOptions={{ classNames: { toast: "!w-fit" } }} />
     </div>
   );
 }
