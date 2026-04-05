@@ -18,6 +18,8 @@ import { defaultFromColumns } from "@/utils/defaultFromColumns";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { CircleAlert } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { useSettingsStore } from "@/stores/useSettingsStore";
+import { initVimMode } from "monaco-vim";
 
 export function RowCreator() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -29,6 +31,7 @@ export function RowCreator() {
   const { data: columns } = useColumns();
   const insertRow = useInsertRow();
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const inputMode = useSettingsStore((state) => state.inputMode);
 
   function insert() {
     if (!database || !table || !editorRef.current) {
@@ -51,6 +54,10 @@ export function RowCreator() {
 
   function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
     editorRef.current = editor;
+
+    if (inputMode === "vim") {
+      initVimMode(editor);
+    }
 
     if (!columns) return null;
 
@@ -81,7 +88,12 @@ export function RowCreator() {
         setOpenRowCreator(open);
       }}
     >
-      <DialogContent className="w-140 flex flex-col h-160 overflow-hidden">
+      <DialogContent
+        onEscapeKeyDown={(e) => {
+          if (inputMode === "vim") e.preventDefault();
+        }}
+        className="w-140 flex flex-col h-160 overflow-hidden"
+      >
         <DialogHeader>
           <DialogTitle>Insert row</DialogTitle>
         </DialogHeader>

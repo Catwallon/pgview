@@ -18,6 +18,8 @@ import { schemaFromColumns } from "@/utils/schemaFromColumns";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { CircleAlert } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { useSettingsStore } from "@/stores/useSettingsStore";
+import { initVimMode } from "monaco-vim";
 
 export function RowEditor() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -31,6 +33,7 @@ export function RowEditor() {
   const editRow = useEditRow();
   const deleteRow = useDeleteRow();
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const inputMode = useSettingsStore((state) => state.inputMode);
 
   function edit() {
     if (!database || !table || !row || !editorRef.current) {
@@ -76,6 +79,10 @@ export function RowEditor() {
   function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
     editorRef.current = editor;
 
+    if (inputMode === "vim") {
+      initVimMode(editor);
+    }
+
     if (!columns) return null;
 
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -106,7 +113,12 @@ export function RowEditor() {
         setOpenRowEditor(open);
       }}
     >
-      <DialogContent className="w-140 flex flex-col h-160 overflow-hidden">
+      <DialogContent
+        onEscapeKeyDown={(e) => {
+          if (inputMode === "vim") e.preventDefault();
+        }}
+        className="w-140 flex flex-col h-160 overflow-hidden"
+      >
         <DialogHeader>
           <DialogTitle>Edit row</DialogTitle>
         </DialogHeader>

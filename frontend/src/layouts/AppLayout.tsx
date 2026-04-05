@@ -9,15 +9,17 @@ import { Button } from "@/components/ui/button";
 import { RowCreator } from "@/components/RowCreator";
 import { useRows } from "@/hooks/useRows";
 import { useUIStore } from "@/stores/useUIStore";
-import { Plus, RefreshCw } from "lucide-react";
+import { Plus, RefreshCw, Settings } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
+import { SettingsDialog } from "@/components/SettingsDialog";
 
 export function AppLayout() {
   const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
+  const setOpenSettings = useUIStore((state) => state.setOpenSettings);
   const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);
   const queryClient = useQueryClient();
@@ -35,7 +37,14 @@ export function AppLayout() {
         </div>
         <div className="mb-4 border-t" />
         <DatabaseTree />
-        <div className="mt-auto p-4 border-t">
+        <div className="mt-auto p-4 border-t flex flex-col gap-2 items-center">
+          <Button
+            className="self-stretch"
+            variant="outline"
+            onClick={() => setOpenSettings(true)}
+          >
+            <Settings /> Settings
+          </Button>
           <a
             className="text-xs text-gray-400"
             href="https://github.com/catwallon/pgview"
@@ -105,6 +114,7 @@ export function AppLayout() {
       </main>
       <RowEditor />
       <RowCreator />
+      <SettingsDialog />
       <Toaster toastOptions={{ classNames: { toast: "!w-fit" } }} />
     </div>
   );
