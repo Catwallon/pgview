@@ -104,13 +104,12 @@ export function RowEditor() {
         setOpenRowEditor(open);
       }}
     >
-      <DialogContent className="w-130">
+      <DialogContent className="w-140 flex flex-col h-160 overflow-hidden">
         <DialogHeader>
           <DialogTitle>Edit row</DialogTitle>
         </DialogHeader>
-        <div className="border rounded-xl p-4 h-100">
+        <div className="border rounded-xl p-4 h-full min-h-0 flex-1">
           <Editor
-            height="100%"
             onMount={handleMount}
             onValidate={(markers) => {
               const errors = markers.filter((m) => m.severity === 8);
@@ -126,8 +125,18 @@ export function RowEditor() {
               lineDecorationsWidth: 0,
               lineNumbersMinChars: 0,
               minimap: { enabled: false },
-              overviewRulerBorder: false,
               scrollBeyondLastLine: false,
+              renderLineHighlight: "none",
+              guides: {
+                indentation: false,
+              },
+              quickSuggestions: false,
+              suggestOnTriggerCharacters: false,
+              wordWrap: "on",
+              wrappingStrategy: "advanced",
+              selectionHighlight: false,
+              occurrencesHighlight: "off",
+              overviewRulerLanes: 0,
             }}
           />
         </div>
