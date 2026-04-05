@@ -15,6 +15,8 @@ import { useEditRow } from "@/hooks/useEditRow";
 import { useDeleteRow } from "@/hooks/useDeleteRow";
 import { Spinner } from "./ui/spinner";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { CircleAlert } from "lucide-react";
 
 export function RowEditor() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -130,10 +132,24 @@ export function RowEditor() {
           />
         </div>
         {editRow.error && (
-          <p className="text-red-800">{editRow.error.message}</p>
+          <Alert variant="destructive">
+            <CircleAlert />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {editRow.error.message.charAt(0).toUpperCase() +
+                editRow.error.message.slice(1)}
+            </AlertDescription>
+          </Alert>
         )}
         {deleteRow.error && (
-          <p className="text-red-800">{deleteRow.error.message}</p>
+          <Alert variant="destructive">
+            <CircleAlert />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {deleteRow.error.message.charAt(0).toUpperCase() +
+                deleteRow.error.message.slice(1)}
+            </AlertDescription>
+          </Alert>
         )}
         <div className="flex justify-between mt-4 ">
           <Button

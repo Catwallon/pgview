@@ -15,6 +15,8 @@ import { useInsertRow } from "@/hooks/useInsertRow";
 import { Spinner } from "./ui/spinner";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
 import { defaultFromColumns } from "@/utils/defaultFromColumns";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { CircleAlert } from "lucide-react";
 
 export function RowCreator() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -99,7 +101,14 @@ export function RowCreator() {
           />
         </div>
         {insertRow.error && (
-          <p className="text-red-800">{insertRow.error.message}</p>
+          <Alert variant="destructive">
+            <CircleAlert />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {insertRow.error.message.charAt(0).toUpperCase() +
+                insertRow.error.message.slice(1)}
+            </AlertDescription>
+          </Alert>
         )}
         <Button
           className="mt-4 ml-auto w-20"
