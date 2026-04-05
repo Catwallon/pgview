@@ -71,8 +71,14 @@ export function AppLayout() {
                   });
                 }}
               >
-                <RefreshCw />
-                {isRefreshing ? <Spinner /> : "Refresh"}
+                {isRefreshing ? (
+                  <Spinner />
+                ) : (
+                  <>
+                    <RefreshCw />
+                    Refresh
+                  </>
+                )}
               </Button>
             </div>
             <p className="ml-2 mb-2 text-xs muted-foreground">
