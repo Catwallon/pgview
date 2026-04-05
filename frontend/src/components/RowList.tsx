@@ -51,6 +51,7 @@ export function RowList() {
               <TableRow
                 key={row.id}
                 onClick={() => {
+                  if (window.getSelection()?.toString()) return;
                   setOpenRowEditor(true);
                   setRow(row);
                 }}
