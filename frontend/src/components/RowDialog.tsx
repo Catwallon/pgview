@@ -21,6 +21,7 @@ import { defaultFromColumns } from "@/utils/defaultFromColumns";
 import { useRef, useState } from "react";
 import { LoadingButton } from "./LoadingButton";
 import { TooltipButton } from "./TooltipButton";
+import { capitalize } from "@/utils/capitalize";
 
 const EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
   glyphMargin: false,
@@ -195,10 +196,7 @@ export function RowDialog() {
           <Alert variant="destructive">
             <CircleAlert />
             <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              {pgError.message.charAt(0).toUpperCase() +
-                pgError.message.slice(1)}
-            </AlertDescription>
+            <AlertDescription>{capitalize(pgError.message)}</AlertDescription>
           </Alert>
         )}
         <div className="flex justify-between mt-4 ">
