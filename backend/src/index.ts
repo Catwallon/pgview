@@ -11,7 +11,6 @@ import { container } from "tsyringe";
 import { TableController } from "./controllers/table.controller.js";
 import { ColumnController } from "./controllers/column.controller.js";
 import { RowController } from "./controllers/row.controller.js";
-import { types } from "pg";
 import { initEnv } from "./config/env.config.js";
 
 console.log("Starting PgView...");
@@ -23,16 +22,6 @@ if (!process.env.NODE_ENV) {
   console.error("NODE_ENV is not set.");
   exit(1);
 }
-
-types.setTypeParser(17, (val) => val);
-types.setTypeParser(600 as any, (val) => val);
-types.setTypeParser(718, (val) => val);
-types.setTypeParser(1082, (val) => val);
-types.setTypeParser(1083, (val) => val);
-types.setTypeParser(1114, (val) => val);
-types.setTypeParser(1186, (val) => val);
-types.setTypeParser(1184, (val) => val);
-types.setTypeParser(1266, (val) => val);
 
 initEnv();
 
