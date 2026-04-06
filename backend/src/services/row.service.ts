@@ -2,10 +2,14 @@ import { Pool } from "pg";
 import { inject, singleton } from "tsyringe";
 import { ColumnService } from "./column.service.js";
 import { Pagination, RowResponse } from "@pgview/shared-types";
+import { ClientService } from "./client.service.js";
 
 @singleton()
 export class RowService {
-  constructor(@inject(ColumnService) private columnService: ColumnService) {}
+  constructor(
+    @inject(ClientService) private clientService: ClientService,
+    @inject(ColumnService) private columnService: ColumnService,
+  ) {}
 
   async getMany(
     dbName: string,
@@ -14,13 +18,7 @@ export class RowService {
     page: number,
     query: string,
   ): Promise<Pagination<RowResponse>> {
-    const pool = new Pool({
-      host: process.env.PGVIEW_DB_HOST || "localhost",
-      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
-      user: process.env.PGVIEW_DB_USER,
-      password: process.env.PGVIEW_DB_PASSWORD,
-      database: dbName,
-    });
+    const client = this.clientService.get(dbName);
 
     const columns = await this.columnService.getAll(dbName, tableName);
     const whereClause = columns
@@ -30,11 +28,11 @@ export class RowService {
     const offset = (page - 1) * limit;
 
     const [rowsRes, countRes] = await Promise.all([
-      pool.query(
+      client.query(
         `SELECT * FROM ${tableName} WHERE ${whereClause} ORDER BY id LIMIT ${limit} OFFSET ${offset};`,
         [`%${query}%`],
       ),
-      pool.query(`SELECT COUNT(*) FROM ${tableName} WHERE ${whereClause};`, [
+      client.query(`SELECT COUNT(*) FROM ${tableName} WHERE ${whereClause};`, [
         `%${query}%`,
       ]),
     ]);
@@ -53,16 +51,10 @@ export class RowService {
     rowId: string,
     updateData: Record<string, string>,
   ): Promise<RowResponse> {
-    const pool = new Pool({
-      host: process.env.PGVIEW_DB_HOST || "localhost",
-      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
-      user: process.env.PGVIEW_DB_USER,
-      password: process.env.PGVIEW_DB_PASSWORD,
-      database: dbName,
-    });
+    const client = this.clientService.get(dbName);
 
     const [rowsRes] = await Promise.all([
-      pool.query(
+      client.query(
         `UPDATE ${tableName} SET ${Object.keys(updateData)
           .map((k, i) => `${k} = $${i + 1}`)
           .join(
@@ -80,16 +72,10 @@ export class RowService {
     tableName: string,
     createData: Record<string, string>,
   ): Promise<RowResponse> {
-    const pool = new Pool({
-      host: process.env.PGVIEW_DB_HOST || "localhost",
-      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
-      user: process.env.PGVIEW_DB_USER,
-      password: process.env.PGVIEW_DB_PASSWORD,
-      database: dbName,
-    });
+    const client = this.clientService.get(dbName);
 
     const [rowsRes] = await Promise.all([
-      pool.query(
+      client.query(
         `INSERT INTO ${tableName} (${Object.keys(createData).join(", ")}) VALUES (${Object.keys(
           createData,
         )
@@ -107,16 +93,10 @@ export class RowService {
     tableName: string,
     rowId: string,
   ): Promise<RowResponse> {
-    const pool = new Pool({
-      host: process.env.PGVIEW_DB_HOST || "localhost",
-      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
-      user: process.env.PGVIEW_DB_USER,
-      password: process.env.PGVIEW_DB_PASSWORD,
-      database: dbName,
-    });
+    const client = this.clientService.get(dbName);
 
     const [rowsRes] = await Promise.all([
-      pool.query(`DELETE FROM ${tableName} WHERE id = $1 RETURNING *;`, [
+      client.query(`DELETE FROM ${tableName} WHERE id = $1 RETURNING *;`, [
         rowId,
       ]),
     ]);

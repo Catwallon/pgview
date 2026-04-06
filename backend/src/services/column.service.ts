@@ -1,20 +1,16 @@
 import { Pool } from "pg";
-import { singleton } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 import type { ColumnResponse } from "@pgview/shared-types";
-import { get } from "http";
+import { ClientService } from "./client.service.js";
 
 @singleton()
 export class ColumnService {
-  async getAll(dbName: string, tableName: string): Promise<ColumnResponse[]> {
-    const pool = new Pool({
-      host: process.env.PGVIEW_DB_HOST || "localhost",
-      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
-      user: process.env.PGVIEW_DB_USER,
-      password: process.env.PGVIEW_DB_PASSWORD,
-      database: dbName,
-    });
+  constructor(@inject(ClientService) private clientService: ClientService) {}
 
-    const res = await pool.query(
+  async getAll(dbName: string, tableName: string): Promise<ColumnResponse[]> {
+    const client = this.clientService.get(dbName);
+
+    const res = await client.query(
       `SELECT 
     a.attname                       AS column_name,
     t.typname                       AS data_type,

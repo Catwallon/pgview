@@ -1,19 +1,16 @@
 import { Pool } from "pg";
 import type { DatabaseResponse } from "@pgview/shared-types";
-import { singleton } from "tsyringe";
+import { inject, singleton } from "tsyringe";
+import { ClientService } from "./client.service.js";
 
 @singleton()
 export class DatabaseService {
-  async getAll(): Promise<DatabaseResponse[]> {
-    const pool = new Pool({
-      host: process.env.PGVIEW_DB_HOST || "localhost",
-      port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
-      user: process.env.PGVIEW_DB_USER,
-      password: process.env.PGVIEW_DB_PASSWORD,
-      database: process.env.PGVIEW_DB_NAME,
-    });
+  constructor(@inject(ClientService) private clientService: ClientService) {}
 
-    const res = await pool.query(
+  async getAll(): Promise<DatabaseResponse[]> {
+    const client = this.clientService.get("postgres");
+
+    const res = await client.query(
       "SELECT datname FROM pg_database WHERE datistemplate = false;",
     );
 
