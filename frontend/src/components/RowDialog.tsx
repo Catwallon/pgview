@@ -14,13 +14,13 @@ import { useDeleteRow } from "@/hooks/useDeleteRow";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { CircleAlert } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { initVimMode } from "monaco-vim";
 import { useInsertRow } from "@/hooks/useInsertRow";
 import { defaultFromColumns } from "@/utils/defaultFromColumns";
 import { useRef, useState } from "react";
 import { LoadingButton } from "./LoadingButton";
+import { TooltipButton } from "./TooltipButton";
 
 const EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
   glyphMargin: false,
@@ -54,7 +54,6 @@ export function RowDialog() {
   const columns = useColumns();
   const updateRow = useUpdateRow();
   const deleteRow = useDeleteRow();
-  const [tooltipOpen, setTooltipOpen] = useState(false);
   const inputMode = useSettingsStore((state) => state.inputMode);
   const insertRow = useInsertRow();
   const rowDialogMode = useUIStore((state) => state.rowDialogMode);
@@ -213,30 +212,14 @@ export function RowDialog() {
               Delete
             </LoadingButton>
           )}
-          <Tooltip
-            open={hasValidationErrors && tooltipOpen}
-            onOpenChange={setTooltipOpen}
+          <TooltipButton
+            className="w-20"
+            tooltip="You have some errors in your JSON"
+            disabled={hasValidationErrors}
+            onClick={isInsert ? handleInsert : handleUpdate}
           >
-            <TooltipTrigger asChild>
-              <span
-                className="inline-block cursor-not-allowed ml-auto"
-                onMouseEnter={() => setTooltipOpen(true)}
-                onMouseLeave={() => setTooltipOpen(false)}
-              >
-                <LoadingButton
-                  className="w-20"
-                  loading={isInsert ? insertRow.isPending : updateRow.isPending}
-                  disabled={hasValidationErrors}
-                  onClick={isInsert ? handleInsert : handleUpdate}
-                >
-                  {isInsert ? "Insert" : "Save"}
-                </LoadingButton>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>You have some errors in your JSON</p>
-            </TooltipContent>
-          </Tooltip>
+            {isInsert ? "Insert" : "Save"}
+          </TooltipButton>
         </div>
       </DialogContent>
     </Dialog>
