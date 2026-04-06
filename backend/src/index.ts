@@ -12,6 +12,7 @@ import { TableController } from "./controllers/table.controller.js";
 import { ColumnController } from "./controllers/column.controller.js";
 import { RowController } from "./controllers/row.controller.js";
 import { types } from "pg";
+import { initEnv } from "./config/env.config.js";
 
 console.log("Starting PgView...");
 
@@ -32,6 +33,8 @@ types.setTypeParser(1114, (val) => val);
 types.setTypeParser(1186, (val) => val);
 types.setTypeParser(1184, (val) => val);
 types.setTypeParser(1266, (val) => val);
+
+initEnv();
 
 const fastify = Fastify();
 

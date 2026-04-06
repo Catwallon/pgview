@@ -1,17 +1,21 @@
 import { Pool } from "pg";
-import { singleton } from "tsyringe";
+import { inject, singleton } from "tsyringe";
+import { DB_CONFIG } from "../config/tokens.config.js";
+import type { DBConfig } from "../types/dbConfig.js";
 
 @singleton()
 export class ClientService {
   private clients: { [databaseName: string]: Pool } = {};
 
+  constructor(@inject(DB_CONFIG) private readonly dbConfig: DBConfig) {}
+
   get(dbName: string): Pool {
     if (!this.clients[dbName]) {
       const client = new Pool({
-        host: process.env.PGVIEW_DB_HOST || "localhost",
-        port: parseInt(process.env.PGVIEW_DB_PORT || "5432"),
-        user: process.env.PGVIEW_DB_USER,
-        password: process.env.PGVIEW_DB_PASSWORD,
+        host: this.dbConfig.host,
+        port: this.dbConfig.port,
+        user: this.dbConfig.user,
+        password: this.dbConfig.password,
         database: dbName,
       });
 
