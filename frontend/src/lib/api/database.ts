@@ -41,7 +41,7 @@ export const fetchInsertRow = (
     body: JSON.stringify(createData),
   });
 
-export const fetchEditRow = (
+export const fetchUpdateRow = (
   dbName: string,
   tableName: string,
   rowId: string,

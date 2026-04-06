@@ -8,10 +8,9 @@ import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
-import { useRef, useState } from "react";
 import { useColumns } from "@/hooks/useColumns";
 import { useUIStore } from "@/stores/useUIStore";
-import { useEditRow } from "@/hooks/useEditRow";
+import { useUpdateRow } from "@/hooks/useUpdateRow";
 import { useDeleteRow } from "@/hooks/useDeleteRow";
 import { Spinner } from "./ui/spinner";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
@@ -20,27 +19,80 @@ import { CircleAlert } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { initVimMode } from "monaco-vim";
+import { useInsertRow } from "@/hooks/useInsertRow";
+import { defaultFromColumns } from "@/utils/defaultFromColumns";
+import { useRef, useState } from "react";
 
-export function RowEditor() {
+const EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
+  glyphMargin: false,
+  folding: false,
+  lineNumbers: "off",
+  lineDecorationsWidth: 0,
+  lineNumbersMinChars: 0,
+  minimap: { enabled: false },
+  scrollBeyondLastLine: false,
+  renderLineHighlight: "none",
+  guides: {
+    indentation: false,
+  },
+  quickSuggestions: false,
+  suggestOnTriggerCharacters: false,
+  wordWrap: "on",
+  wrappingStrategy: "advanced",
+  selectionHighlight: false,
+  occurrencesHighlight: "off",
+  overviewRulerLanes: 0,
+};
+
+export function RowDialog() {
+  const openRowDialog = useUIStore((state) => state.openRowDialog);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
-  const [hasErrors, setHasErrors] = useState(false);
-  const openRowEditor = useUIStore((state) => state.openRowEditor);
-  const setOpenRowEditor = useUIStore((state) => state.setOpenRowEditor);
+  const [hasValidationErrors, setHasValidationErrors] = useState(false);
+  const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
   const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);
   const row = useAppStore((state) => state.row);
-  const { data: columns } = useColumns();
-  const editRow = useEditRow();
+  const columns = useColumns();
+  const updateRow = useUpdateRow();
   const deleteRow = useDeleteRow();
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const inputMode = useSettingsStore((state) => state.inputMode);
+  const insertRow = useInsertRow();
+  const rowDialogMode = useUIStore((state) => state.rowDialogMode);
+  const isInsert = rowDialogMode === "insert";
 
-  function edit() {
+  function resetAll() {
+    insertRow.reset();
+    updateRow.reset();
+    deleteRow.reset();
+  }
+
+  function handleInsert() {
+    if (!database || !table || !editorRef.current) {
+      return;
+    }
+
+    insertRow.mutate(
+      {
+        database,
+        table,
+        data: JSON.parse(editorRef.current.getValue()),
+      },
+      {
+        onSuccess: () => {
+          setOpenRowDialog(false);
+          resetAll();
+        },
+      },
+    );
+  }
+
+  function handleUpdate() {
     if (!database || !table || !row || !editorRef.current) {
       return;
     }
 
-    editRow.mutate(
+    updateRow.mutate(
       {
         database,
         table,
@@ -49,14 +101,14 @@ export function RowEditor() {
       },
       {
         onSuccess: () => {
-          setOpenRowEditor(false);
-          deleteRow.reset();
+          setOpenRowDialog(false);
+          resetAll();
         },
       },
     );
   }
 
-  function delete_() {
+  function handleDelete() {
     if (!database || !table || !row || !editorRef.current) {
       return;
     }
@@ -69,8 +121,8 @@ export function RowEditor() {
       },
       {
         onSuccess: () => {
-          setOpenRowEditor(false);
-          editRow.reset();
+          setOpenRowDialog(false);
+          resetAll();
         },
       },
     );
@@ -83,7 +135,7 @@ export function RowEditor() {
       initVimMode(editor);
     }
 
-    if (!columns) return null;
+    if (!columns.data) return;
 
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
@@ -92,113 +144,97 @@ export function RowEditor() {
         {
           uri: "https://schema.json",
           fileMatch: ["*"],
-          schema: schemaFromColumns(columns),
+          schema: schemaFromColumns(columns.data),
         },
       ],
     });
 
     const markers = monaco.editor.getModelMarkers();
     const errors = markers.filter((m: editor.IMarker) => m.severity === 8);
-    setHasErrors(errors.length > 0);
+    setHasValidationErrors(errors.length > 0);
   }
+
+  const pgError = updateRow.error ?? insertRow.error ?? deleteRow.error;
+  const isPending = isInsert ? insertRow.isPending : updateRow.isPending;
+  const label = isInsert ? "Insert" : "Save";
 
   return (
     <Dialog
-      open={openRowEditor}
+      open={!!openRowDialog}
       onOpenChange={(open) => {
         if (!open) {
-          editRow.reset();
-          deleteRow.reset();
+          setOpenRowDialog(false);
+          resetAll();
         }
-        setOpenRowEditor(open);
       }}
     >
       <DialogContent
         onEscapeKeyDown={(e) => {
+          // Prevent closing the dialog with escape if in vim input mode, since it's used by vim input
           if (inputMode === "vim") e.preventDefault();
         }}
         className="w-140 flex flex-col h-160 overflow-hidden"
       >
         <DialogHeader>
-          <DialogTitle>Edit row</DialogTitle>
+          <DialogTitle>{isInsert ? "Insert" : "Edit"} row</DialogTitle>
         </DialogHeader>
         <div className="border rounded-xl p-4 h-full min-h-0 flex-1">
           <Editor
             onMount={handleMount}
             onValidate={(markers) => {
               const errors = markers.filter((m) => m.severity === 8);
-              setHasErrors(errors.length > 0);
+              setHasValidationErrors(errors.length > 0);
             }}
             theme="vs"
             defaultLanguage="json"
-            defaultValue={JSON.stringify(row, null, 2)}
-            options={{
-              glyphMargin: false,
-              folding: false,
-              lineNumbers: "off",
-              lineDecorationsWidth: 0,
-              lineNumbersMinChars: 0,
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              renderLineHighlight: "none",
-              guides: {
-                indentation: false,
-              },
-              quickSuggestions: false,
-              suggestOnTriggerCharacters: false,
-              wordWrap: "on",
-              wrappingStrategy: "advanced",
-              selectionHighlight: false,
-              occurrencesHighlight: "off",
-              overviewRulerLanes: 0,
-            }}
+            defaultValue={
+              isInsert
+                ? defaultFromColumns(columns.data ?? [])
+                : JSON.stringify(row, null, 2)
+            }
+            options={EDITOR_OPTIONS}
           />
         </div>
-        {editRow.error && (
+        {pgError && (
           <Alert variant="destructive">
             <CircleAlert />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
-              {editRow.error.message.charAt(0).toUpperCase() +
-                editRow.error.message.slice(1)}
-            </AlertDescription>
-          </Alert>
-        )}
-        {deleteRow.error && (
-          <Alert variant="destructive">
-            <CircleAlert />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              {deleteRow.error.message.charAt(0).toUpperCase() +
-                deleteRow.error.message.slice(1)}
+              {pgError.message.charAt(0).toUpperCase() +
+                pgError.message.slice(1)}
             </AlertDescription>
           </Alert>
         )}
         <div className="flex justify-between mt-4 ">
-          <Button
-            variant="outline"
-            className="w-20"
-            onClick={delete_}
-            disabled={deleteRow.isPending}
-          >
-            Delete
-          </Button>
+          {!isInsert && (
+            <Button
+              variant="outline"
+              className="w-20"
+              onClick={handleDelete}
+              disabled={deleteRow.isPending}
+            >
+              Delete
+            </Button>
+          )}
           <Tooltip
-            open={hasErrors && tooltipOpen}
+            open={hasValidationErrors && tooltipOpen}
             onOpenChange={setTooltipOpen}
           >
             <TooltipTrigger asChild>
               <span
-                className="inline-block cursor-not-allowed"
+                className="inline-block cursor-not-allowed ml-auto"
                 onMouseEnter={() => setTooltipOpen(true)}
                 onMouseLeave={() => setTooltipOpen(false)}
               >
                 <Button
                   className="w-20"
-                  disabled={hasErrors || editRow.isPending}
-                  onClick={edit}
+                  disabled={
+                    hasValidationErrors ||
+                    (isInsert ? insertRow.isPending : updateRow.isPending)
+                  }
+                  onClick={isInsert ? handleInsert : handleUpdate}
                 >
-                  {editRow.isPending ? <Spinner /> : "Save"}
+                  {isPending ? <Spinner /> : label}
                 </Button>
               </span>
             </TooltipTrigger>

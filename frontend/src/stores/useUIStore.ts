@@ -1,25 +1,25 @@
 import { create } from "zustand";
 
 interface UIState {
-  openRowEditor: boolean;
-  openRowCreator: boolean;
+  openRowDialog: boolean;
+  rowDialogMode: "insert" | "edit";
   openSettings: boolean;
-  setOpenRowEditor: (open: boolean) => void;
-  setOpenRowCreator: (open: boolean) => void;
+  setOpenRowDialog: (open: boolean) => void;
+  setRowDialogMode: (mode: "insert" | "edit") => void;
   setOpenSettings: (open: boolean) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  openRowEditor: false,
-  openRowCreator: false,
+  openRowDialog: false,
+  rowDialogMode: "insert",
   openSettings: false,
 
-  setOpenRowEditor: (open: boolean) => {
-    set({ openRowEditor: open });
+  setOpenRowDialog: (open: boolean) => {
+    set({ openRowDialog: open });
   },
 
-  setOpenRowCreator: (open: boolean) => {
-    set({ openRowCreator: open });
+  setRowDialogMode: (mode: "insert" | "edit") => {
+    set({ rowDialogMode: mode });
   },
 
   setOpenSettings: (open: boolean) => {

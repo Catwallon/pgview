@@ -13,7 +13,8 @@ import { useUIStore } from "@/stores/useUIStore";
 import { formatDisplayValue } from "@/utils/formatDisplayValue";
 
 export function RowList() {
-  const setOpenRowEditor = useUIStore((state) => state.setOpenRowEditor);
+  const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
+  const setRowDialogMode = useUIStore((state) => state.setRowDialogMode);
   const { data: columns } = useColumns();
   const { data: rows } = useRows();
   const setRow = useAppStore((state) => state.setRow);
@@ -52,7 +53,8 @@ export function RowList() {
                 key={row.id}
                 onClick={() => {
                   if (window.getSelection()?.toString()) return;
-                  setOpenRowEditor(true);
+                  setRowDialogMode("edit");
+                  setOpenRowDialog(true);
                   setRow(row);
                 }}
               >

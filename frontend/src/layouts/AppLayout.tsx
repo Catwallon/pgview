@@ -1,12 +1,10 @@
 import { DatabaseTree } from "@/components/DatabaseTree";
 import { RowList } from "@/components/RowList";
-import { RowEditor } from "@/components/RowEditor";
 import { RowPagination } from "@/components/RowPagination";
 import { useAppStore } from "@/stores/useAppStore";
 import Logo from "@/assets/logo.svg";
 import { RowSearch } from "@/components/RowSearch";
 import { Button } from "@/components/ui/button";
-import { RowCreator } from "@/components/RowCreator";
 import { useRows } from "@/hooks/useRows";
 import { useUIStore } from "@/stores/useUIStore";
 import { Plus, RefreshCw, Settings } from "lucide-react";
@@ -16,9 +14,11 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
 import { SettingsDialog } from "@/components/SettingsDialog";
+import { RowDialog } from "@/components/RowDialog";
 
 export function AppLayout() {
-  const setOpenRowCreator = useUIStore((state) => state.setOpenRowCreator);
+  const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
+  const setRowDialogMode = useUIStore((state) => state.setRowDialogMode);
   const setOpenSettings = useUIStore((state) => state.setOpenSettings);
   const database = useAppStore((state) => state.database);
   const table = useAppStore((state) => state.table);
@@ -58,7 +58,12 @@ export function AppLayout() {
           <>
             <div className="p-4 flex gap-2">
               <RowSearch />
-              <Button onClick={() => setOpenRowCreator(true)}>
+              <Button
+                onClick={() => {
+                  setRowDialogMode("insert");
+                  setOpenRowDialog(true);
+                }}
+              >
                 <Plus />
                 Insert
               </Button>
@@ -113,8 +118,7 @@ export function AppLayout() {
           </div>
         )}
       </main>
-      <RowEditor />
-      <RowCreator />
+      <RowDialog />
       <SettingsDialog />
       <Toaster toastOptions={{ classNames: { toast: "!w-fit" } }} />
     </div>
