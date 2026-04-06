@@ -15,14 +15,6 @@ import { initEnv } from "./config/env.config.js";
 
 console.log("Starting PgView...");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-if (!process.env.NODE_ENV) {
-  console.error("NODE_ENV is not set.");
-  exit(1);
-}
-
 initEnv();
 
 const fastify = Fastify();
@@ -73,6 +65,9 @@ fastify.delete(
 fastify.setErrorHandler(errorHandler);
 
 if (process.env.NODE_ENV === "production") {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
   fastify.register(fastifyStatic, {
     root: path.join(__dirname, "../../frontend/dist"),
     prefix: "/",
