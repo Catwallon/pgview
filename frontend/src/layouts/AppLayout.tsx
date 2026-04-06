@@ -11,10 +11,10 @@ import { Plus, RefreshCw, Settings } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { RowDialog } from "@/components/RowDialog";
+import { LoadingButton } from "@/components/LoadingButton";
 
 export function AppLayout() {
   const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
@@ -25,6 +25,21 @@ export function AppLayout() {
   const queryClient = useQueryClient();
   const rows = useRows();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  function handleRefresh() {
+    if (!database || !table) {
+      return;
+    }
+
+    setIsRefreshing(true);
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["rows", database, table] }),
+      queryClient.invalidateQueries({ queryKey: ["columns", database, table] }),
+    ]).then(() => {
+      setIsRefreshing(false);
+      toast.success("Table refreshed");
+    });
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -67,34 +82,15 @@ export function AppLayout() {
                 <Plus />
                 Insert
               </Button>
-              <Button
+              <LoadingButton
                 className="w-26"
                 variant="outline"
-                disabled={isRefreshing}
-                onClick={() => {
-                  setIsRefreshing(true);
-                  Promise.all([
-                    queryClient.invalidateQueries({
-                      queryKey: ["rows", database, table],
-                    }),
-                    queryClient.invalidateQueries({
-                      queryKey: ["columns", database, table],
-                    }),
-                  ]).then(() => {
-                    setIsRefreshing(false);
-                    toast.success("Table refreshed");
-                  });
-                }}
+                loading={isRefreshing}
+                onClick={handleRefresh}
               >
-                {isRefreshing ? (
-                  <Spinner />
-                ) : (
-                  <>
-                    <RefreshCw />
-                    Refresh
-                  </>
-                )}
-              </Button>
+                <RefreshCw />
+                Refresh
+              </LoadingButton>
             </div>
             <p className="ml-2 mb-2 text-xs muted-foreground">
               Showing {rows.data?.items.length} of {rows.data?.totalItems} rows

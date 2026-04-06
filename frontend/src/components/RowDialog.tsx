@@ -6,13 +6,11 @@ import {
 } from "@/components/ui/dialog";
 import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/stores/useAppStore";
 import { useColumns } from "@/hooks/useColumns";
 import { useUIStore } from "@/stores/useUIStore";
 import { useUpdateRow } from "@/hooks/useUpdateRow";
 import { useDeleteRow } from "@/hooks/useDeleteRow";
-import { Spinner } from "./ui/spinner";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { CircleAlert } from "lucide-react";
@@ -22,6 +20,7 @@ import { initVimMode } from "monaco-vim";
 import { useInsertRow } from "@/hooks/useInsertRow";
 import { defaultFromColumns } from "@/utils/defaultFromColumns";
 import { useRef, useState } from "react";
+import { LoadingButton } from "./LoadingButton";
 
 const EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
   glyphMargin: false,
@@ -155,8 +154,6 @@ export function RowDialog() {
   }
 
   const pgError = updateRow.error ?? insertRow.error ?? deleteRow.error;
-  const isPending = isInsert ? insertRow.isPending : updateRow.isPending;
-  const label = isInsert ? "Insert" : "Save";
 
   return (
     <Dialog
@@ -207,14 +204,14 @@ export function RowDialog() {
         )}
         <div className="flex justify-between mt-4 ">
           {!isInsert && (
-            <Button
+            <LoadingButton
               variant="outline"
               className="w-20"
               onClick={handleDelete}
-              disabled={deleteRow.isPending}
+              loading={deleteRow.isPending}
             >
               Delete
-            </Button>
+            </LoadingButton>
           )}
           <Tooltip
             open={hasValidationErrors && tooltipOpen}
@@ -226,16 +223,14 @@ export function RowDialog() {
                 onMouseEnter={() => setTooltipOpen(true)}
                 onMouseLeave={() => setTooltipOpen(false)}
               >
-                <Button
+                <LoadingButton
                   className="w-20"
-                  disabled={
-                    hasValidationErrors ||
-                    (isInsert ? insertRow.isPending : updateRow.isPending)
-                  }
+                  loading={isInsert ? insertRow.isPending : updateRow.isPending}
+                  disabled={hasValidationErrors}
                   onClick={isInsert ? handleInsert : handleUpdate}
                 >
-                  {isPending ? <Spinner /> : label}
-                </Button>
+                  {isInsert ? "Insert" : "Save"}
+                </LoadingButton>
               </span>
             </TooltipTrigger>
             <TooltipContent>
