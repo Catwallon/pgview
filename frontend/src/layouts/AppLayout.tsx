@@ -64,6 +64,7 @@ export function AppLayout() {
               </Button>
               <Button
                 className="w-26"
+                variant="outline"
                 disabled={isRefreshing}
                 onClick={() => {
                   setIsRefreshing(true);

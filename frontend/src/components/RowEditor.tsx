@@ -176,7 +176,7 @@ export function RowEditor() {
         )}
         <div className="flex justify-between mt-4 ">
           <Button
-            variant="secondary"
+            variant="outline"
             className="w-20"
             onClick={delete_}
             disabled={deleteRow.isPending}
