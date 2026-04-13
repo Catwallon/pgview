@@ -66,7 +66,7 @@ export function RowList() {
           <TableBody>
             {rows.items.map((row) => (
               <TableRow
-                key={JSON.stringify(getRowId(table, row))}
+                key={JSON.stringify(row)}
                 className={isRowPlaceholder ? "opacity-50" : ""}
                 onClick={() => {
                   if (window.getSelection()?.toString()) return;
