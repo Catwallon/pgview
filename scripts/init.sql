@@ -53,7 +53,7 @@ from generate_series(1, 1000) as i;
 
 \c test-db
 
-CREATE TABLE test (
+CREATE TABLE types (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     int8 BIGINT NOT NULL DEFAULT 0,
     serial8 SERIAL8 NOT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE test (
     xml XML NOT NULL
 );
 
-INSERT INTO test (
+INSERT INTO types (
     int8,
     serial8,
     bit,
@@ -187,7 +187,7 @@ INSERT INTO test (
     '<root><child name="foo">Hello PG</child></root>'
 );
 
-INSERT INTO test (
+INSERT INTO types (
     int8,
     serial8,
     bit,
@@ -274,3 +274,12 @@ INSERT INTO test (
     '123e4567-e89b-12d3-a456-426614174000',
     '<root><child name="foo">Hello PG</child></root>'
 );
+
+CREATE TABLE multiple_pk (
+    id1 UUID NOT NULL DEFAULT gen_random_uuid(),
+    id2 UUID NOT NULL DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id1, id2)
+);
+
+insert into multiple_pk (name) values ('Hello PG');

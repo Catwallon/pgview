@@ -67,7 +67,7 @@ function propertyFromColumn(col: TableFullResponse["columns"][number]): object {
 }
 
 function getProperty(col: TableFullResponse["columns"][number]): object {
-  const { type, length = 1, precision = 1, scale = 1 } = col;
+  const { type, length, precision = 1, scale = 1 } = col;
 
   switch (type) {
     case "int8":
@@ -86,17 +86,19 @@ function getProperty(col: TableFullResponse["columns"][number]): object {
       };
     case "bit":
       return {
-        title: `bit(${length})`,
-        description: `fixed-length ${length} bit${length > 1 && "s"} string`,
+        title: length ? `bit(${length})` : "bit",
+        description: `fixed-length ${length || 1} bit${length && length > 1 ? "s" : ""} string`,
         type: "string",
-        pattern: `^[01]{${length}}$`,
+        pattern: `^[01]{${length || 1}}$`,
       };
     case "varbit":
       return {
-        title: `varbit(${length})`,
-        description: `variable-length ${length} bit${length > 1 && "s"} string`,
+        title: length ? `varbit(${length})` : "varbit",
+        description: length
+          ? `variable-length ${length} bit${length > 1 ? "s" : ""} string`
+          : "variable-length bit string",
         type: "string",
-        pattern: `^[01]{1,${length}}$`,
+        pattern: length ? `^[01]{1,${length}}$` : "^[01]+$",
       };
     case "bool":
       return {
@@ -120,16 +122,18 @@ function getProperty(col: TableFullResponse["columns"][number]): object {
       };
     case "bpchar":
       return {
-        title: "bpchar",
-        description: `fixed-length ${length} character${length > 1 ? "s" : ""} string`,
+        title: length ? `bpchar(${length})` : "bpchar",
+        description: `fixed-length ${length || 1} character${length && length > 1 ? "s" : ""} string`,
         type: "string",
-        minLength: length,
-        maxLength: length,
+        minLength: length || 1,
+        maxLength: length || 1,
       };
     case "varchar":
       return {
-        title: "varchar",
-        description: `variable-length ${length} character${length > 1 ? "s" : ""} string`,
+        title: length ? `varchar(${length})` : "varchar",
+        description: length
+          ? `variable-length ${length} character${length && length > 1 ? "s" : ""} string`
+          : "variable-length character string",
         type: "string",
         minLength: 0,
         maxLength: length,
