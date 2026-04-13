@@ -22,8 +22,16 @@ export function RowList() {
   const setRow = useAppStore((state) => state.setRow);
   const page = useAppStore((state) => state.page);
   const query = useAppStore((state) => state.query);
-  const { data: table } = useTable(dbName, tableName);
-  const { data: rows } = useRows(dbName, tableName, page, query);
+  const { data: table, isPlaceholderData: isTablePlaceholder } = useTable(
+    dbName,
+    tableName,
+  );
+  const { data: rows, isPlaceholderData: isRowPlaceholder } = useRows(
+    dbName,
+    tableName,
+    page,
+    query,
+  );
 
   const isEmpty = (value: unknown) => {
     return String(value).length === 0;
@@ -37,7 +45,7 @@ export function RowList() {
     <div className="flex flex-col h-full overflow-x-auto">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className={isTablePlaceholder ? "opacity-50" : ""}>
             {table?.columns &&
               table.columns.map((col) => (
                 <TableHead key={col.name} className="cursor-default bg-gray-50">
@@ -54,11 +62,12 @@ export function RowList() {
               ))}
           </TableRow>
         </TableHeader>
-        {table && rows && rows.items.length != 0 && (
+        {table && rows && (
           <TableBody>
             {rows.items.map((row) => (
               <TableRow
                 key={JSON.stringify(getRowId(table, row))}
+                className={isRowPlaceholder ? "opacity-50" : ""}
                 onClick={() => {
                   if (window.getSelection()?.toString()) return;
                   setRow(getRowId(table, row));
@@ -66,7 +75,7 @@ export function RowList() {
                   setOpenRowDialog(true);
                 }}
               >
-                {Object.entries(row).map(([key, value], index) => (
+                {Object.entries(row).map(([key, value]) => (
                   <TableCell key={key}>
                     <p
                       className={
@@ -80,7 +89,10 @@ export function RowList() {
                         : isNull(value)
                           ? "null"
                           : table?.columns &&
-                            formatDisplayValue(table.columns[index], value)}
+                            formatDisplayValue(
+                              table.columns.find((col) => col.name === key),
+                              value,
+                            )}
                     </p>
                   </TableCell>
                 ))}

@@ -4,11 +4,9 @@ export function getRowId(
   table: TableFullResponse,
   row: RowResponse,
 ): Record<string, string> {
-  const rowId = Object.fromEntries(
+  return Object.fromEntries(
     table.columns
-      .filter((col) => col.isPrimaryKey)
+      .filter((col) => col.isPrimaryKey && col.name in row)
       .map((col) => [col.name, String(row[col.name])]),
   );
-
-  return rowId;
 }
