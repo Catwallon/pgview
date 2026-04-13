@@ -20,21 +20,27 @@ export function AppLayout() {
   const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
   const setRowDialogMode = useUIStore((state) => state.setRowDialogMode);
   const setOpenSettings = useUIStore((state) => state.setOpenSettings);
-  const database = useAppStore((state) => state.database);
-  const table = useAppStore((state) => state.table);
+  const dbName = useAppStore((state) => state.dbName);
+  const tableName = useAppStore((state) => state.tableName);
+  const page = useAppStore((state) => state.page);
+  const query = useAppStore((state) => state.query);
+  const rows = useRows(dbName, tableName, page, query);
   const queryClient = useQueryClient();
-  const rows = useRows();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   function handleRefresh() {
-    if (!database || !table) {
+    if (!dbName || !tableName) {
       return;
     }
 
     setIsRefreshing(true);
     Promise.all([
-      queryClient.invalidateQueries({ queryKey: ["rows", database, table] }),
-      queryClient.invalidateQueries({ queryKey: ["columns", database, table] }),
+      queryClient.invalidateQueries({
+        queryKey: ["rows", dbName, tableName],
+      }),
+      queryClient.invalidateQueries({
+        queryKey: ["columns", dbName, tableName],
+      }),
     ]).then(() => {
       setIsRefreshing(false);
       toast.success("Table refreshed");
@@ -69,7 +75,7 @@ export function AppLayout() {
         </div>
       </nav>
       <main className="ml-64 min-w-0 flex-1 bg-white">
-        {table ? (
+        {tableName ? (
           <>
             <div className="p-4 flex gap-2">
               <RowSearch />

@@ -5,7 +5,7 @@ import type { DBConfig } from "../types/dbConfig.js";
 
 @singleton()
 export class ClientService {
-  private clients: { [databaseName: string]: Pool } = {};
+  private clients: { [dbName: string]: Pool } = {};
 
   constructor(@inject(DB_CONFIG) private readonly dbConfig: DBConfig) {
     this.registerTypeparsers();

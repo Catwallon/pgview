@@ -29,19 +29,32 @@ export class RowController {
     reply.send(rows);
   }
 
-  async edit(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  async get(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { dbName, tableName, rowId } = request.params as {
       dbName: string;
       tableName: string;
       rowId: string;
     };
 
+    const row = await this.rowService.get(dbName, tableName, rowId);
+
+    reply.send(row);
+  }
+
+  async editMany(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const { dbName, tableName } = request.params as {
+      dbName: string;
+      tableName: string;
+    };
+
+    const filters = request.query as Record<string, string>;
+
     const updateData = request.body as Record<string, string>;
 
-    const row = await this.rowService.edit(
+    const row = await this.rowService.editMany(
       dbName,
       tableName,
-      rowId,
+      filters,
       updateData,
     );
 
@@ -61,14 +74,18 @@ export class RowController {
     reply.send(row);
   }
 
-  async delete(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { dbName, tableName, rowId } = request.params as {
+  async deleteMany(
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const { dbName, tableName } = request.params as {
       dbName: string;
       tableName: string;
-      rowId: string;
     };
 
-    const row = await this.rowService.delete(dbName, tableName, rowId);
+    const filters = request.query as Record<string, string>;
+
+    const row = await this.rowService.deleteMany(dbName, tableName, filters);
 
     reply.send(row);
   }

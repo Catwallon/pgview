@@ -3,21 +3,22 @@ import type {
   Pagination,
   RowResponse,
   DatabaseResponse,
-  ColumnResponse,
-  TableResponse,
+  TableSummaryResponse,
+  TableFullResponse,
 } from "@pgview/shared-types";
 
 export const fetchGetDatabases = (): Promise<DatabaseResponse[]> =>
   apiFetch("/databases");
 
-export const fetchGetTables = (dbName: string): Promise<TableResponse[]> =>
-  apiFetch(`/databases/${dbName}/tables`);
+export const fetchGetTables = (
+  dbName: string,
+): Promise<TableSummaryResponse[]> => apiFetch(`/databases/${dbName}/tables`);
 
-export const fetchGetColumns = (
+export const fetchGetTable = (
   dbName: string,
   tableName: string,
-): Promise<ColumnResponse[]> =>
-  apiFetch(`/databases/${dbName}/tables/${tableName}/columns`);
+): Promise<TableFullResponse> =>
+  apiFetch(`/databases/${dbName}/tables/${tableName}`);
 
 export const fetchGetRows = (
   dbName: string,
@@ -41,23 +42,29 @@ export const fetchInsertRow = (
     body: JSON.stringify(createData),
   });
 
-export const fetchUpdateRow = (
+export const fetchUpdateRows = (
   dbName: string,
   tableName: string,
-  rowId: string,
+  filters: Record<string, string>,
   updateData: Record<string, string>,
-): Promise<RowResponse> =>
-  apiFetch(`/databases/${dbName}/tables/${tableName}/rows/${rowId}`, {
+): Promise<RowResponse[]> => {
+  const params = new URLSearchParams(filters);
+
+  return apiFetch(`/databases/${dbName}/tables/${tableName}/rows?${params}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updateData),
   });
+};
 
-export const fetchDeleteRow = (
+export const fetchDeleteRows = (
   dbName: string,
   tableName: string,
-  rowId: string,
-): Promise<RowResponse> =>
-  apiFetch(`/databases/${dbName}/tables/${tableName}/rows/${rowId}`, {
+  filters: Record<string, string>,
+): Promise<RowResponse[]> => {
+  const params = new URLSearchParams(filters);
+
+  return apiFetch(`/databases/${dbName}/tables/${tableName}/rows?${params}`, {
     method: "DELETE",
   });
+};

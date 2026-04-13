@@ -1,4 +1,4 @@
-import type { ColumnResponse } from "@pgview/shared-types";
+import type { TableFullResponse } from "@pgview/shared-types";
 
 type Schema = {
   type: string;
@@ -38,7 +38,9 @@ const INTERVAL_UNIT_REGEX = `-?[0-9]+ (year|mon|week|day)s?`;
 const INTERVAL_VERBOSE_REGEX = `(${INTERVAL_UNIT_REGEX}( ${INTERVAL_UNIT_REGEX})*)`;
 const INTERVAL_VERBOSE_TIME_REGEX = `${INTERVAL_VERBOSE_REGEX}( ${INTERVAL_TIME_REGEX})?`;
 
-export function schemaFromColumns(columns: ColumnResponse[]): Schema {
+export function schemaFromColumns(
+  columns: TableFullResponse["columns"],
+): Schema {
   const schema: Schema = {
     type: "object",
     properties: {},
@@ -54,7 +56,7 @@ export function schemaFromColumns(columns: ColumnResponse[]): Schema {
   return schema;
 }
 
-function propertyFromColumn(col: ColumnResponse): object {
+function propertyFromColumn(col: TableFullResponse["columns"][number]): object {
   const property = getProperty(col);
 
   if (col.nullable) {
@@ -64,7 +66,7 @@ function propertyFromColumn(col: ColumnResponse): object {
   return property;
 }
 
-function getProperty(col: ColumnResponse): object {
+function getProperty(col: TableFullResponse["columns"][number]): object {
   const { type, length = 1, precision = 1, scale = 1 } = col;
 
   switch (type) {

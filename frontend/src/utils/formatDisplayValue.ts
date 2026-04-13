@@ -1,7 +1,7 @@
-import type { ColumnResponse } from "@pgview/shared-types";
+import type { TableFullResponse } from "@pgview/shared-types";
 
 export function formatDisplayValue(
-  col: ColumnResponse | undefined,
+  col: TableFullResponse["columns"][number] | undefined,
   value: unknown,
 ): string {
   switch (col?.type) {

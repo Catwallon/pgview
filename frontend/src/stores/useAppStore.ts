@@ -2,15 +2,15 @@ import { getQueryParams, updateQueryParams } from "@/utils/queryParams";
 import { create } from "zustand";
 
 interface AppState {
-  database: string | null;
-  table: string | null;
+  dbName: string | null;
+  tableName: string | null;
+  rowId: Record<string, string> | null;
   page: number;
   query: string;
-  row: Record<string, string> | null;
-  setDatabase: (database: string) => void;
-  setTable: (table: string) => void;
+  setDatabase: (dbName: string) => void;
+  setTable: (tableName: string) => void;
+  setRow: (rowId: Record<string, string>) => void;
   setPage: (page: number) => void;
-  setRow: (row: Record<string, string>) => void;
   setQuery: (query: string) => void;
 }
 
@@ -18,25 +18,25 @@ const initFromUrl = () => {
   const params = getQueryParams();
 
   return {
-    database: params.get("database") ?? "",
-    table: params.get("table") ?? "",
+    dbName: params.get("database") ?? "",
+    tableName: params.get("table") ?? "",
   };
 };
 
 export const useAppStore = create<AppState>((set) => ({
   ...initFromUrl(),
+  rowId: null,
   page: 1,
-  row: null,
   query: "",
 
-  setDatabase: (database: string) => {
-    updateQueryParams({ database });
-    set({ database, table: null, page: 1, row: null, query: "" });
+  setDatabase: (dbName: string) => {
+    updateQueryParams({ database: dbName });
+    set({ dbName, tableName: null, page: 1, rowId: null, query: "" });
   },
 
-  setTable: (table: string) => {
-    updateQueryParams({ table });
-    set({ table, page: 1, row: null, query: "" });
+  setTable: (tableName: string) => {
+    updateQueryParams({ table: tableName });
+    set({ tableName, page: 1, rowId: null, query: "" });
   },
 
   setPage: (page: number) => {
@@ -47,8 +47,8 @@ export const useAppStore = create<AppState>((set) => ({
     set({ page });
   },
 
-  setRow: (row: Record<string, string>) => {
-    set({ row });
+  setRow: (rowId: Record<string, string>) => {
+    set({ rowId });
   },
 
   setQuery: (query: string) => {

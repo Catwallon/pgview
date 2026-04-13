@@ -1,6 +1,8 @@
-import type { ColumnResponse } from "@pgview/shared-types";
+import type { TableFullResponse } from "@pgview/shared-types";
 
-export function defaultFromColumns(columns: ColumnResponse[]): string {
+export function defaultFromColumns(
+  columns: TableFullResponse["columns"],
+): string {
   const defaultJson: Record<string, unknown> = {};
 
   for (const col of columns) {
@@ -10,7 +12,7 @@ export function defaultFromColumns(columns: ColumnResponse[]): string {
   return JSON.stringify(defaultJson, null, 2);
 }
 
-function defaultFromColumn(col: ColumnResponse): unknown {
+function defaultFromColumn(col: TableFullResponse["columns"][number]): unknown {
   if (col.nullable) {
     return null;
   }
@@ -18,7 +20,7 @@ function defaultFromColumn(col: ColumnResponse): unknown {
   return getDefault(col);
 }
 
-function getDefault(col: ColumnResponse): unknown {
+function getDefault(col: TableFullResponse["columns"][number]): unknown {
   const { type, length = 1 } = col;
 
   switch (type) {

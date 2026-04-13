@@ -17,13 +17,13 @@ import type { DatabaseResponse } from "@pgview/shared-types";
 export function DatabaseTree() {
   const { data: databases } = useDatabases();
 
-  const database = useAppStore((state) => state.database);
-  const table = useAppStore((state) => state.table);
+  const dbName = useAppStore((state) => state.dbName);
+  const tableName = useAppStore((state) => state.tableName);
 
   return (
     <TreeProvider
-      defaultExpandedIds={database ? [database] : []}
-      selectedIds={database && table ? [`${database}-${table}`] : []}
+      defaultExpandedIds={dbName ? [dbName] : []}
+      selectedIds={dbName && tableName ? [`${dbName}-${tableName}`] : []}
     >
       <TreeView>
         {databases &&

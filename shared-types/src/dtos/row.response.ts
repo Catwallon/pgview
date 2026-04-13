@@ -1,1 +1,1 @@
-export type RowResponse = Record<string, string>;
+export type RowResponse = Record<string, unknown>;

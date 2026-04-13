@@ -7,16 +7,18 @@ export function useInsertRow() {
 
   return useMutation({
     mutationFn: ({
-      database,
-      table,
+      dbName,
+      tableName,
       data,
     }: {
-      database: string;
-      table: string;
+      dbName: string;
+      tableName: string;
       data: Record<string, string>;
-    }) => fetchInsertRow(database, table, data),
-    onSuccess: (_, { database, table }) => {
-      queryClient.invalidateQueries({ queryKey: ["rows", database, table] });
+    }) => fetchInsertRow(dbName, tableName, data),
+    onSuccess: (_, { dbName, tableName }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["rows", dbName, tableName],
+      });
       toast.success("Row inserted successfully");
     },
   });

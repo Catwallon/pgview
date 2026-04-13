@@ -9,7 +9,6 @@ import { errorHandler } from "./utils/errorHandler.util.js";
 import { DatabaseController } from "./controllers/database.controller.js";
 import { container } from "tsyringe";
 import { TableController } from "./controllers/table.controller.js";
-import { ColumnController } from "./controllers/column.controller.js";
 import { RowController } from "./controllers/row.controller.js";
 import { initEnv } from "./config/env.config.js";
 
@@ -28,9 +27,9 @@ fastify.get("/api/databases/:dbName/tables", async (request, reply) => {
 });
 
 fastify.get(
-  "/api/databases/:dbName/tables/:tableName/columns",
+  "/api/databases/:dbName/tables/:tableName",
   async (request, reply) => {
-    return container.resolve(ColumnController).getAll(request, reply);
+    return container.resolve(TableController).get(request, reply);
   },
 );
 
@@ -49,16 +48,16 @@ fastify.post(
 );
 
 fastify.put(
-  "/api/databases/:dbName/tables/:tableName/rows/:rowId",
+  "/api/databases/:dbName/tables/:tableName/rows",
   async (request, reply) => {
-    return container.resolve(RowController).edit(request, reply);
+    return container.resolve(RowController).editMany(request, reply);
   },
 );
 
 fastify.delete(
-  "/api/databases/:dbName/tables/:tableName/rows/:rowId",
+  "/api/databases/:dbName/tables/:tableName/rows",
   async (request, reply) => {
-    return container.resolve(RowController).delete(request, reply);
+    return container.resolve(RowController).deleteMany(request, reply);
   },
 );
 

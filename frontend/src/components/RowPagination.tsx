@@ -15,10 +15,13 @@ export function RowPagination({
 }: {
   visiblePageCount: number;
 }) {
+  const dbName = useAppStore((state) => state.dbName);
+  const tableName = useAppStore((state) => state.tableName);
   const page = useAppStore((state) => state.page);
   const setPage = useAppStore((state) => state.setPage);
+  const query = useAppStore((state) => state.query);
 
-  const { data: rows } = useRows();
+  const { data: rows } = useRows(dbName, tableName, page, query);
   if (!rows) return null;
 
   const half = Math.floor(visiblePageCount / 2);

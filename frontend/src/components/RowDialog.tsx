@@ -7,10 +7,10 @@ import {
 import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { useAppStore } from "@/stores/useAppStore";
-import { useColumns } from "@/hooks/useColumns";
+import { useTable } from "@/hooks/useTable";
 import { useUIStore } from "@/stores/useUIStore";
-import { useUpdateRow } from "@/hooks/useUpdateRow";
-import { useDeleteRow } from "@/hooks/useDeleteRow";
+import { useUpdateRows } from "@/hooks/useUpdateRows";
+import { useDeleteRows } from "@/hooks/useDeleteRows";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { CircleAlert } from "lucide-react";
@@ -22,6 +22,8 @@ import { useRef, useState } from "react";
 import { LoadingButton } from "./LoadingButton";
 import { TooltipButton } from "./TooltipButton";
 import { capitalize } from "@/utils/capitalize";
+import { findRow } from "@/utils/findRow";
+import { useRows } from "@/hooks/useRows";
 
 const EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
   glyphMargin: false,
@@ -49,16 +51,20 @@ export function RowDialog() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [hasValidationErrors, setHasValidationErrors] = useState(false);
   const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
-  const database = useAppStore((state) => state.database);
-  const table = useAppStore((state) => state.table);
-  const row = useAppStore((state) => state.row);
-  const columns = useColumns();
-  const updateRow = useUpdateRow();
-  const deleteRow = useDeleteRow();
+  const dbName = useAppStore((state) => state.dbName);
+  const tableName = useAppStore((state) => state.tableName);
+  const rowId = useAppStore((state) => state.rowId);
+  const page = useAppStore((state) => state.page);
+  const query = useAppStore((state) => state.query);
+  const { data: table } = useTable(dbName, tableName);
+  const { data: rows } = useRows(dbName, tableName, page, query);
+  const updateRow = useUpdateRows();
+  const deleteRow = useDeleteRows();
   const inputMode = useSettingsStore((state) => state.inputMode);
   const insertRow = useInsertRow();
   const rowDialogMode = useUIStore((state) => state.rowDialogMode);
   const isInsert = rowDialogMode === "insert";
+  const row = findRow(rows?.items ?? [], rowId ?? {});
 
   function resetAll() {
     insertRow.reset();
@@ -67,14 +73,14 @@ export function RowDialog() {
   }
 
   function handleInsert() {
-    if (!database || !table || !editorRef.current) {
+    if (!dbName || !tableName || !editorRef.current) {
       return;
     }
 
     insertRow.mutate(
       {
-        database,
-        table,
+        dbName,
+        tableName,
         data: JSON.parse(editorRef.current.getValue()),
       },
       {
@@ -87,15 +93,15 @@ export function RowDialog() {
   }
 
   function handleUpdate() {
-    if (!database || !table || !row || !editorRef.current) {
+    if (!dbName || !tableName || !rowId || !editorRef.current) {
       return;
     }
 
     updateRow.mutate(
       {
-        database,
-        table,
-        id: row.id,
+        dbName,
+        tableName,
+        rowId,
         data: JSON.parse(editorRef.current.getValue()),
       },
       {
@@ -108,15 +114,15 @@ export function RowDialog() {
   }
 
   function handleDelete() {
-    if (!database || !table || !row || !editorRef.current) {
+    if (!dbName || !tableName || !rowId || !editorRef.current) {
       return;
     }
 
     deleteRow.mutate(
       {
-        database,
-        table,
-        id: row.id,
+        dbName,
+        tableName,
+        rowId,
       },
       {
         onSuccess: () => {
@@ -134,7 +140,7 @@ export function RowDialog() {
       initVimMode(editor);
     }
 
-    if (!columns.data) return;
+    if (!table?.columns) return;
 
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
@@ -143,7 +149,7 @@ export function RowDialog() {
         {
           uri: "https://schema.json",
           fileMatch: ["*"],
-          schema: schemaFromColumns(columns.data),
+          schema: schemaFromColumns(table.columns),
         },
       ],
     });
@@ -177,6 +183,7 @@ export function RowDialog() {
         </DialogHeader>
         <div className="border rounded-xl p-4 h-full min-h-0 flex-1">
           <Editor
+            key={row ? JSON.stringify(rowId) : "empty"}
             onMount={handleMount}
             onValidate={(markers) => {
               const errors = markers.filter((m) => m.severity === 8);
@@ -186,7 +193,7 @@ export function RowDialog() {
             defaultLanguage="json"
             defaultValue={
               isInsert
-                ? defaultFromColumns(columns.data ?? [])
+                ? defaultFromColumns(table?.columns ?? [])
                 : JSON.stringify(row, null, 2)
             }
             options={EDITOR_OPTIONS}

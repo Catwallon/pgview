@@ -13,4 +13,15 @@ export class TableController {
 
     reply.send(tables);
   }
+
+  async get(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const { dbName, tableName } = request.params as {
+      dbName: string;
+      tableName: string;
+    };
+
+    const table = await this.tableService.get(dbName, tableName);
+
+    reply.send(table);
+  }
 }

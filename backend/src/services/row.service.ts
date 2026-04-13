@@ -1,14 +1,13 @@
-import { Pool } from "pg";
 import { inject, singleton } from "tsyringe";
-import { ColumnService } from "./column.service.js";
 import { Pagination, RowResponse } from "@pgview/shared-types";
 import { ClientService } from "./client.service.js";
+import { TableService } from "./table.service.js";
 
 @singleton()
 export class RowService {
   constructor(
     @inject(ClientService) private clientService: ClientService,
-    @inject(ColumnService) private columnService: ColumnService,
+    @inject(TableService) private tableService: TableService,
   ) {}
 
   async getMany(
@@ -20,8 +19,8 @@ export class RowService {
   ): Promise<Pagination<RowResponse>> {
     const client = this.clientService.get(dbName);
 
-    const columns = await this.columnService.getAll(dbName, tableName);
-    const whereClause = columns
+    const table = await this.tableService.get(dbName, tableName);
+    const whereClause = table.columns
       .map((c) => `${c.name}::text ILIKE $1`)
       .join(" OR ");
 
@@ -29,7 +28,7 @@ export class RowService {
 
     const [rowsRes, countRes] = await Promise.all([
       client.query(
-        `SELECT * FROM ${tableName} WHERE ${whereClause} ORDER BY id LIMIT ${limit} OFFSET ${offset};`,
+        `SELECT * FROM ${tableName} WHERE ${whereClause} LIMIT ${limit} OFFSET ${offset};`,
         [`%${query}%`],
       ),
       client.query(`SELECT COUNT(*) FROM ${tableName} WHERE ${whereClause};`, [
@@ -45,26 +44,42 @@ export class RowService {
     };
   }
 
-  async edit(
+  async get(
     dbName: string,
     tableName: string,
     rowId: string,
-    updateData: Record<string, string>,
   ): Promise<RowResponse> {
     const client = this.clientService.get(dbName);
 
     const [rowsRes] = await Promise.all([
-      client.query(
-        `UPDATE ${tableName} SET ${Object.keys(updateData)
-          .map((k, i) => `${k} = $${i + 1}`)
-          .join(
-            ", ",
-          )} WHERE id = $${Object.keys(updateData).length + 1} RETURNING *;`,
-        [...Object.values(updateData), rowId],
-      ),
+      client.query(`SELECT * FROM ${tableName} WHERE id = $1;`, [rowId]),
     ]);
 
     return rowsRes.rows[0];
+  }
+
+  async editMany(
+    dbName: string,
+    tableName: string,
+    filters: Record<string, string>,
+    updateData: Record<string, string>,
+  ): Promise<RowResponse[]> {
+    const client = this.clientService.get(dbName);
+
+    const setClause = Object.keys(updateData)
+      .map((k, i) => `"${k}" = $${i + 1}`)
+      .join(", ");
+
+    const whereClause = Object.keys(filters)
+      .map((k, i) => `"${k}" = $${i + Object.keys(updateData).length + 1}`)
+      .join(" AND ");
+
+    const result = await client.query(
+      `UPDATE "${tableName}" SET ${setClause} WHERE ${whereClause} RETURNING *;`,
+      [...Object.values(updateData), ...Object.values(filters)],
+    );
+
+    return result.rows;
   }
 
   async create(
@@ -88,19 +103,22 @@ export class RowService {
     return rowsRes.rows[0];
   }
 
-  async delete(
+  async deleteMany(
     dbName: string,
     tableName: string,
-    rowId: string,
-  ): Promise<RowResponse> {
+    filters: Record<string, string>,
+  ): Promise<RowResponse[]> {
     const client = this.clientService.get(dbName);
 
-    const [rowsRes] = await Promise.all([
-      client.query(`DELETE FROM ${tableName} WHERE id = $1 RETURNING *;`, [
-        rowId,
-      ]),
-    ]);
+    const whereClause = Object.keys(filters)
+      .map((k, i) => `"${k}" = $${i + 1}`)
+      .join(" AND ");
 
-    return rowsRes.rows[0];
+    const rowsRes = await client.query(
+      `DELETE FROM ${tableName} WHERE ${whereClause} RETURNING *;`,
+      Object.values(filters),
+    );
+
+    return rowsRes.rows;
   }
 }
