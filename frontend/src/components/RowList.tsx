@@ -12,6 +12,7 @@ import { useAppStore } from "@/stores/useAppStore";
 import { useUIStore } from "@/stores/useUIStore";
 import { formatDisplayValue } from "@/utils/formatDisplayValue";
 import { getRowId } from "@/utils/getRowId";
+import { Key } from "lucide-react";
 
 export function RowList() {
   const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
@@ -41,12 +42,14 @@ export function RowList() {
               table.columns.map((col) => (
                 <TableHead key={col.name} className="cursor-default bg-gray-50">
                   <span>{col.name}</span>
-                  <p
-                    style={{ fontSize: "9px" }}
-                    className="text-muted-foreground italic"
-                  >
-                    {col.type}
-                  </p>
+                  <div className="flex items-center gap-1">
+                    <p className="text-[9px] text-muted-foreground italic">
+                      {col.type}
+                    </p>
+                    {col.isPrimaryKey && (
+                      <Key className="w-2.75 h-2.75 text-muted-foreground" />
+                    )}
+                  </div>
                 </TableHead>
               ))}
           </TableRow>
