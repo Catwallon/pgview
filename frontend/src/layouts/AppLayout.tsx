@@ -57,7 +57,9 @@ export function AppLayout() {
           </h1>
         </div>
         <div className="mb-4 border-t" />
-        <DatabaseTree />
+        <div className="flex-1 overflow-y-auto">
+          <DatabaseTree />
+        </div>
         <div className="mt-auto p-4 border-t flex flex-col gap-2 items-center">
           <Button
             className="self-stretch"
