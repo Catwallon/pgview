@@ -17,12 +17,11 @@ export function RowSearch() {
   }, [localQuery, setQuery]);
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 w-full max-w-lg min-w-28">
       <Input
         value={localQuery}
         onChange={(e) => setLocalQuery(e.target.value)}
         placeholder="Search..."
-        className="w-150"
       />
     </div>
   );
