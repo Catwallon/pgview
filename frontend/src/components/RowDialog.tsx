@@ -55,9 +55,10 @@ export function RowDialog() {
   const tableName = useAppStore((state) => state.tableName);
   const rowId = useAppStore((state) => state.rowId);
   const page = useAppStore((state) => state.page);
+  const limit = useAppStore((state) => state.limit);
   const query = useAppStore((state) => state.query);
   const { data: table } = useTable(dbName, tableName);
-  const { data: rows } = useRows(dbName, tableName, page, query);
+  const { data: rows } = useRows(dbName, tableName, page, limit, query);
   const updateRow = useUpdateRows();
   const deleteRow = useDeleteRows();
   const inputMode = useSettingsStore((state) => state.inputMode);

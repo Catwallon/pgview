@@ -13,6 +13,9 @@ import { useUIStore } from "@/stores/useUIStore";
 import { formatDisplayValue } from "@/utils/formatDisplayValue";
 import { getRowId } from "@/utils/getRowId";
 import { Key } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+const CELL_HEIGHT = 40;
 
 export function RowList() {
   const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
@@ -21,7 +24,11 @@ export function RowList() {
   const tableName = useAppStore((state) => state.tableName);
   const setRow = useAppStore((state) => state.setRow);
   const page = useAppStore((state) => state.page);
+  const limit = useAppStore((state) => state.limit);
+  const setLimit = useAppStore((state) => state.setLimit);
   const query = useAppStore((state) => state.query);
+  const ref = useRef<HTMLDivElement>(null);
+  const [cellHeight, setCellHeight] = useState(CELL_HEIGHT);
   const { data: table, isPlaceholderData: isTablePlaceholder } = useTable(
     dbName,
     tableName,
@@ -30,6 +37,7 @@ export function RowList() {
     dbName,
     tableName,
     page,
+    limit,
     query,
   );
 
@@ -41,66 +49,89 @@ export function RowList() {
     return value === null;
   };
 
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      const height = entries[0].contentRect.height - 1; // -1 for overflow margin
+      const newLimit = Math.floor(height / CELL_HEIGHT) - 1; // -1 for header row
+      setLimit(newLimit);
+      setCellHeight(height / (newLimit + 1));
+    });
+
+    observer.observe(ref.current!);
+    return () => observer.disconnect();
+  }, [setLimit]);
+
   return (
-    <div className="flex flex-col h-full overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow className={isTablePlaceholder ? "opacity-50" : ""}>
-            {table?.columns &&
-              table.columns.map((col) => (
-                <TableHead key={col.name} className="cursor-default bg-gray-50">
-                  <span>{col.name}</span>
-                  <div className="flex items-center gap-1">
-                    <p className="text-[9px] text-muted-foreground italic">
-                      {col.type}
-                    </p>
-                    {col.isPrimaryKey && (
-                      <Key className="w-2.75 h-2.75 text-muted-foreground" />
-                    )}
-                  </div>
-                </TableHead>
-              ))}
-          </TableRow>
-        </TableHeader>
-        {table && rows && (
-          <TableBody>
-            {rows.items.map((row) => (
-              <TableRow
-                key={JSON.stringify(row)}
-                className={isRowPlaceholder ? "opacity-50" : ""}
-                onClick={() => {
-                  if (window.getSelection()?.toString()) return;
-                  setRow(getRowId(table, row));
-                  setRowDialogMode("edit");
-                  setOpenRowDialog(true);
-                }}
-              >
-                {Object.entries(row).map(([key, value]) => (
-                  <TableCell key={key}>
-                    <p
-                      className={
-                        isEmpty(value) || isNull(value)
-                          ? "text-muted-foreground italic"
-                          : ""
-                      }
-                    >
-                      {isEmpty(value)
-                        ? "empty"
-                        : isNull(value)
-                          ? "null"
-                          : table?.columns &&
-                            formatDisplayValue(
-                              table.columns.find((col) => col.name === key),
-                              value,
-                            )}
-                    </p>
-                  </TableCell>
+    <div
+      ref={ref}
+      className="flex flex-col h-full overflow-x-auto overflow-y-hidden "
+    >
+      <div className="border-b">
+        <Table>
+          <TableHeader>
+            <TableRow className={isTablePlaceholder ? "opacity-50" : ""}>
+              {table?.columns &&
+                table.columns.map((col) => (
+                  <TableHead
+                    key={col.name}
+                    style={{ height: `${cellHeight}px` }}
+                    className="cursor-default bg-gray-50"
+                  >
+                    <span>{col.name}</span>
+                    <div className="flex items-center gap-1">
+                      <p className="text-[9px] text-muted-foreground italic">
+                        {col.type}
+                      </p>
+                      {col.isPrimaryKey && (
+                        <Key className="w-2.75 h-2.75 text-muted-foreground" />
+                      )}
+                    </div>
+                  </TableHead>
                 ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        )}
-      </Table>
+            </TableRow>
+          </TableHeader>
+          {table && rows && (
+            <TableBody>
+              {rows.items.map((row) => (
+                <TableRow
+                  key={JSON.stringify(row)}
+                  className={isRowPlaceholder ? "opacity-50" : ""}
+                  onClick={() => {
+                    if (window.getSelection()?.toString()) return;
+                    setRow(getRowId(table, row));
+                    setRowDialogMode("edit");
+                    setOpenRowDialog(true);
+                  }}
+                >
+                  {Object.entries(row).map(([key, value]) => (
+                    <TableCell height={cellHeight} key={key}>
+                      <p
+                        className={
+                          isEmpty(value) || isNull(value)
+                            ? "text-muted-foreground italic"
+                            : ""
+                        }
+                      >
+                        {isEmpty(value)
+                          ? "empty"
+                          : isNull(value)
+                            ? "null"
+                            : table?.columns &&
+                              formatDisplayValue(
+                                table.columns.find((col) => col.name === key),
+                                value,
+                              )}
+                      </p>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
+        </Table>
+      </div>
       {rows && rows.items.length === 0 && (
         <div className="flex flex-1 items-center justify-center">
           <p className="text-xl text-gray-500">Table is empty</p>

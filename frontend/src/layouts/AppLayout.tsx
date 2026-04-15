@@ -23,8 +23,9 @@ export function AppLayout() {
   const dbName = useAppStore((state) => state.dbName);
   const tableName = useAppStore((state) => state.tableName);
   const page = useAppStore((state) => state.page);
+  const limit = useAppStore((state) => state.limit);
   const query = useAppStore((state) => state.query);
-  const rows = useRows(dbName, tableName, page, query);
+  const rows = useRows(dbName, tableName, page, limit, query);
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -105,7 +106,7 @@ export function AppLayout() {
             </p>
             <div className="border-b" />
             <div
-              className="border-b flex flex-col"
+              className="flex flex-col"
               style={{ height: "calc(100vh - 160px)" }}
             >
               <RowList />

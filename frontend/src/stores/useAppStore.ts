@@ -6,11 +6,13 @@ interface AppState {
   tableName: string | null;
   rowId: Record<string, string> | null;
   page: number;
+  limit: number;
   query: string;
   setDatabase: (dbName: string) => void;
   setTable: (tableName: string) => void;
   setRow: (rowId: Record<string, string>) => void;
   setPage: (page: number) => void;
+  setLimit: (limit: number) => void;
   setQuery: (query: string) => void;
 }
 
@@ -27,6 +29,7 @@ export const useAppStore = create<AppState>((set) => ({
   ...initFromUrl(),
   rowId: null,
   page: 1,
+  limit: 1,
   query: "",
 
   setDatabase: (dbName: string) => {
@@ -39,16 +42,22 @@ export const useAppStore = create<AppState>((set) => ({
     set({ tableName, page: 1, rowId: null, query: "" });
   },
 
+  setRow: (rowId: Record<string, string>) => {
+    set({ rowId });
+  },
+
   setPage: (page: number) => {
     if (page < 1) {
       return;
     }
-
     set({ page });
   },
 
-  setRow: (rowId: Record<string, string>) => {
-    set({ rowId });
+  setLimit: (limit: number) => {
+    if (limit < 1) {
+      return;
+    }
+    set({ limit });
   },
 
   setQuery: (query: string) => {

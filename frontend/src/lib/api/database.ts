@@ -23,8 +23,8 @@ export const fetchGetTable = (
 export const fetchGetRows = (
   dbName: string,
   tableName: string,
-  limit: number,
   page: number,
+  limit: number,
   query: string,
 ): Promise<Pagination<RowResponse>> =>
   apiFetch(
