@@ -48,7 +48,7 @@ export function AppLayout() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen">
       <nav className="fixed left-0 top-0 h-screen w-64 border-r bg-gray-50 flex flex-col">
         <div className="flex items-center ml-4 gap-2 my-4">
           <img src={Logo} alt="logo" className="w-12 h-12" />
