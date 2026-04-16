@@ -12,11 +12,21 @@ export class RowController {
       tableName: string;
     };
 
-    const { limit, page, query } = request.query as {
+    const { limit, page, query, sort } = request.query as {
       limit: number;
       page: number;
       query: string;
+      sort?: string;
     };
+
+    let parsedSort = undefined;
+    if (sort) {
+      const [column, direction] = sort.split(":");
+
+      if (column && direction) {
+        parsedSort = { column, direction: direction as "asc" | "desc" };
+      }
+    }
 
     const rows = await this.rowService.getMany(
       dbName,
@@ -24,6 +34,7 @@ export class RowController {
       limit,
       page,
       query,
+      parsedSort,
     );
 
     reply.send(rows);

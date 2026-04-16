@@ -12,8 +12,9 @@ import { useAppStore } from "@/stores/useAppStore";
 import { useUIStore } from "@/stores/useUIStore";
 import { formatDisplayValue } from "@/utils/formatDisplayValue";
 import { getRowId } from "@/utils/getRowId";
-import { Key } from "lucide-react";
+import { ChevronUp, Key } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const CELL_HEIGHT = 40;
 
@@ -28,6 +29,8 @@ export function RowList() {
   const setLimit = useAppStore((state) => state.setLimit);
   const query = useAppStore((state) => state.query);
   const ref = useRef<HTMLDivElement>(null);
+  const sort = useAppStore((state) => state.sort);
+  const setSort = useAppStore((state) => state.setSort);
   const [cellHeight, setCellHeight] = useState(CELL_HEIGHT);
   const { data: table, isPlaceholderData: isTablePlaceholder } = useTable(
     dbName,
@@ -39,6 +42,7 @@ export function RowList() {
     page,
     limit,
     query,
+    sort ? sort : undefined,
   );
 
   const isEmpty = (value: unknown) => {
@@ -77,16 +81,43 @@ export function RowList() {
                   <TableHead
                     key={col.name}
                     style={{ height: `${cellHeight}px` }}
-                    className="cursor-default bg-gray-50"
+                    className="bg-gray-50 group cursor-pointer"
+                    onClick={() => {
+                      if (sort?.column === col.name) {
+                        setSort(
+                          sort.direction === "asc"
+                            ? { column: col.name, direction: "desc" }
+                            : sort.direction === "desc"
+                              ? null
+                              : { column: col.name, direction: "asc" },
+                        );
+                      } else {
+                        setSort({ column: col.name, direction: "asc" });
+                      }
+                    }}
                   >
-                    <span>{col.name}</span>
-                    <div className="flex items-center gap-1">
-                      <p className="text-[9px] text-muted-foreground italic">
-                        {col.type}
-                      </p>
-                      {col.isPrimaryKey && (
-                        <Key className="w-2.75 h-2.75 text-muted-foreground" />
-                      )}
+                    <div className="flex items-center w-full">
+                      <div className="flex flex-col mr-4">
+                        <span>{col.name}</span>
+                        <div className="flex items-center gap-1">
+                          <p className="text-[9px] text-muted-foreground italic">
+                            {col.type}
+                          </p>
+                          {col.isPrimaryKey && (
+                            <Key className="w-2.75 h-2.75 text-muted-foreground" />
+                          )}
+                        </div>
+                      </div>
+                      <ChevronUp
+                        className={cn(
+                          "size-4 ml-auto transition-all group-hover:opacity-100",
+                          sort?.column === col.name
+                            ? sort?.direction === "desc"
+                              ? "opacity-50 rotate-180"
+                              : "opacity-50 rotate-0"
+                            : "opacity-0",
+                        )}
+                      />
                     </div>
                   </TableHead>
                 ))}

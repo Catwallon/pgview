@@ -26,10 +26,19 @@ export const fetchGetRows = (
   page: number,
   limit: number,
   query: string,
-): Promise<Pagination<RowResponse>> =>
-  apiFetch(
-    `/databases/${dbName}/tables/${tableName}/rows?limit=${limit}&page=${page}&query=${query}`,
-  );
+  sort?: { column: string; direction: "asc" | "desc" },
+): Promise<Pagination<RowResponse>> => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    query,
+  });
+  if (sort) {
+    params.append("sort", `${sort.column}:${sort.direction}`);
+  }
+
+  return apiFetch(`/databases/${dbName}/tables/${tableName}/rows?${params}`);
+};
 
 export const fetchInsertRow = (
   dbName: string,

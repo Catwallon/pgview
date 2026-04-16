@@ -16,6 +16,7 @@ export class RowService {
     limit: number,
     page: number,
     query: string,
+    sort?: { column: string; direction: "asc" | "desc" },
   ): Promise<Pagination<RowResponse>> {
     const client = this.clientService.get(dbName);
 
@@ -28,7 +29,7 @@ export class RowService {
 
     const [rowsRes, countRes] = await Promise.all([
       client.query(
-        `SELECT * FROM ${tableName} WHERE ${whereClause} LIMIT ${limit} OFFSET ${offset};`,
+        `SELECT * FROM ${tableName} WHERE ${whereClause} ${sort ? `ORDER BY "${sort.column}" ${sort.direction}` : ""} LIMIT ${limit} OFFSET ${offset};`,
         [`%${query}%`],
       ),
       client.query(`SELECT COUNT(*) FROM ${tableName} WHERE ${whereClause};`, [
