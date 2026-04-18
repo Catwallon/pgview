@@ -13,15 +13,15 @@ export function defaultFromColumns(
 }
 
 function defaultFromColumn(col: TableFullResponse["columns"][number]): unknown {
-  if (col.nullable) {
+  const { type, length = 1 } = col;
+
+  if (col.isNullable) {
     return null;
   }
 
-  return getDefault(col);
-}
-
-function getDefault(col: TableFullResponse["columns"][number]): unknown {
-  const { type, length = 1 } = col;
+  if (col.isArray) {
+    return [];
+  }
 
   switch (type) {
     case "int8":

@@ -1,11 +1,12 @@
 interface Column {
   name: string;
   type: string;
-  isPrimaryKey: boolean;
   length?: number;
   precision?: number;
   scale?: number;
-  nullable: boolean;
+  isPrimaryKey: boolean;
+  isNullable: boolean;
+  isArray: boolean;
 }
 
 export interface TableFullResponse {

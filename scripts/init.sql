@@ -275,6 +275,21 @@ INSERT INTO types (
     '<root><child name="foo">Hello PG</child></root>'
 );
 
+CREATE TABLE arrays (
+    id UUID NOT NULL DEFAULT gen_random_uuid(),
+    int8_array INT8[] NOT NULL,
+    varchar_array VARCHAR(8)[] NOT NULL,
+    json_array JSON[] NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO arrays (int8_array, varchar_array, json_array)
+VALUES (
+    '{1, 2, 3}',
+    '{"Hello", "PG"}',
+    ARRAY['{"key1": "value1"}'::json, '{"key2": "value2"}'::json]
+);
+
 CREATE TABLE multiple_pk (
     id1 UUID NOT NULL DEFAULT gen_random_uuid(),
     id2 UUID NOT NULL DEFAULT gen_random_uuid(),

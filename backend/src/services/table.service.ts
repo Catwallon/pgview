@@ -54,13 +54,15 @@ export class TableService {
         length: this.getLength(row.data_type, row.type_mod),
         precision: this.getPrecision(row.data_type, row.type_mod),
         scale: this.getScale(row.data_type, row.type_mod),
-        nullable: row.nullable,
+        isNullable: row.nullable,
         isPrimaryKey: row.is_primary_key,
+        isArray: row.data_type.startsWith("_"),
       })),
     };
   }
 
   private getType(dataType: string, columnDefault: string | null): string {
+    dataType = dataType.replace(/^_/, "");
     if (columnDefault?.startsWith("nextval(")) {
       switch (dataType) {
         case "int2":
@@ -76,6 +78,7 @@ export class TableService {
 
   private getLength(dataType: string, typmod: number): number | undefined {
     if (typmod < 0) return undefined;
+    dataType = dataType.replace(/^_/, "");
     switch (dataType) {
       case "bpchar":
       case "varchar":
