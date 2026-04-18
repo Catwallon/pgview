@@ -7,6 +7,7 @@ import {
 import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { useAppStore } from "@/stores/useAppStore";
+import { useShallow } from "zustand/shallow";
 import { useTable } from "@/hooks/useTable";
 import { useUIStore } from "@/stores/useUIStore";
 import { useUpdateRows } from "@/hooks/useUpdateRows";
@@ -51,13 +52,17 @@ export function RowDialog() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [hasValidationErrors, setHasValidationErrors] = useState(false);
   const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
-  const dbName = useAppStore((state) => state.dbName);
-  const tableName = useAppStore((state) => state.tableName);
-  const rowId = useAppStore((state) => state.rowId);
-  const page = useAppStore((state) => state.page);
-  const limit = useAppStore((state) => state.limit);
-  const query = useAppStore((state) => state.query);
-  const sort = useAppStore((state) => state.sort);
+  const { dbName, tableName, rowId, page, limit, query, sort } = useAppStore(
+    useShallow((state) => ({
+      dbName: state.dbName,
+      tableName: state.tableName,
+      rowId: state.rowId,
+      page: state.page,
+      limit: state.limit,
+      query: state.query,
+      sort: state.sort,
+    })),
+  );
   const { data: table } = useTable(dbName, tableName);
   const { data: rows } = useRows(
     dbName,
@@ -67,10 +72,10 @@ export function RowDialog() {
     query,
     sort ? sort : undefined,
   );
+  const insertRow = useInsertRow();
   const updateRow = useUpdateRows();
   const deleteRow = useDeleteRows();
   const inputMode = useSettingsStore((state) => state.inputMode);
-  const insertRow = useInsertRow();
   const rowDialogMode = useUIStore((state) => state.rowDialogMode);
   const isInsert = rowDialogMode === "insert";
   const row = findRow(rows?.items ?? [], rowId ?? {});

@@ -15,16 +15,23 @@ import { useState } from "react";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { RowDialog } from "@/components/RowDialog";
 import { LoadingButton } from "@/components/LoadingButton";
+import { useShallow } from "zustand/shallow";
 
 export function AppLayout() {
   const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
   const setRowDialogMode = useUIStore((state) => state.setRowDialogMode);
   const setOpenSettings = useUIStore((state) => state.setOpenSettings);
-  const dbName = useAppStore((state) => state.dbName);
-  const tableName = useAppStore((state) => state.tableName);
-  const page = useAppStore((state) => state.page);
-  const limit = useAppStore((state) => state.limit);
-  const query = useAppStore((state) => state.query);
+  const { dbName, tableName, page, limit, query } = useAppStore(
+    useShallow((state) => ({
+      dbName: state.dbName,
+      tableName: state.tableName,
+      rowId: state.rowId,
+      page: state.page,
+      limit: state.limit,
+      query: state.query,
+      sort: state.sort,
+    })),
+  );
   const rows = useRows(dbName, tableName, page, limit, query);
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);

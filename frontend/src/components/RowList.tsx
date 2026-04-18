@@ -15,21 +15,27 @@ import { getRowId } from "@/utils/getRowId";
 import { ChevronUp, Key } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
+import { useShallow } from "zustand/shallow";
 
 const CELL_HEIGHT = 40;
 
 export function RowList() {
   const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
   const setRowDialogMode = useUIStore((state) => state.setRowDialogMode);
-  const dbName = useAppStore((state) => state.dbName);
-  const tableName = useAppStore((state) => state.tableName);
+  const { dbName, tableName, page, limit, query, sort } = useAppStore(
+    useShallow((state) => ({
+      dbName: state.dbName,
+      tableName: state.tableName,
+      rowId: state.rowId,
+      page: state.page,
+      limit: state.limit,
+      query: state.query,
+      sort: state.sort,
+    })),
+  );
   const setRow = useAppStore((state) => state.setRow);
-  const page = useAppStore((state) => state.page);
-  const limit = useAppStore((state) => state.limit);
   const setLimit = useAppStore((state) => state.setLimit);
-  const query = useAppStore((state) => state.query);
   const ref = useRef<HTMLDivElement>(null);
-  const sort = useAppStore((state) => state.sort);
   const setSort = useAppStore((state) => state.setSort);
   const [cellHeight, setCellHeight] = useState(CELL_HEIGHT);
   const { data: table, isPlaceholderData: isTablePlaceholder } = useTable(
@@ -70,7 +76,7 @@ export function RowList() {
   return (
     <div
       ref={ref}
-      className="flex flex-col h-full overflow-x-auto overflow-y-hidden "
+      className="flex flex-col h-full overflow-x-auto overflow-y-hidden"
     >
       <Table>
         <TableHeader>
