@@ -45,13 +45,23 @@ const EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = {
   selectionHighlight: false,
   occurrencesHighlight: "off",
   overviewRulerLanes: 0,
+  stickyScroll: {
+    enabled: false,
+  },
+  scrollbar: {
+    useShadows: false,
+    alwaysConsumeMouseWheel: false,
+    vertical: "hidden",
+    horizontal: "hidden",
+  },
 };
 
 export function RowDialog() {
   const openRowDialog = useUIStore((state) => state.openRowDialog);
+  const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
+  const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [hasValidationErrors, setHasValidationErrors] = useState(false);
-  const setOpenRowDialog = useUIStore((state) => state.setOpenRowDialog);
   const { dbName, tableName, rowId, page, limit, query, sort } = useAppStore(
     useShallow((state) => ({
       dbName: state.dbName,
@@ -150,9 +160,30 @@ export function RowDialog() {
   function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
     editorRef.current = editor;
 
+    const updateHeight = () => {
+      const contentHeight = editor.getContentHeight();
+      if (containerRef.current) {
+        containerRef.current.style.height = `${contentHeight}px`;
+        editor.layout();
+      }
+    };
+
+    editor.onDidContentSizeChange(updateHeight);
+    updateHeight();
+
     if (inputMode === "vim") {
       initVimMode(editor);
     }
+
+    editorRef.current?.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF,
+      () => {},
+    );
+
+    editorRef.current?.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyH,
+      () => {},
+    );
 
     if (!table?.columns) return;
 
@@ -190,28 +221,32 @@ export function RowDialog() {
           // Prevent closing the dialog with escape if in vim input mode, since it's used by vim input
           if (inputMode === "vim") e.preventDefault();
         }}
-        className="w-140 flex flex-col h-160 overflow-hidden"
+        className="w-140 flex flex-col h-160"
       >
         <DialogHeader>
           <DialogTitle>{isInsert ? "Insert" : "Edit"} row</DialogTitle>
         </DialogHeader>
-        <div className="border rounded-xl p-4 h-full min-h-0 flex-1">
-          <Editor
-            key={row ? JSON.stringify(rowId) : "empty"}
-            onMount={handleMount}
-            onValidate={(markers) => {
-              const errors = markers.filter((m) => m.severity === 8);
-              setHasValidationErrors(errors.length > 0);
-            }}
-            theme="vs"
-            defaultLanguage="json"
-            defaultValue={
-              isInsert
-                ? defaultFromColumns(table?.columns ?? [])
-                : JSON.stringify(row, null, 2)
-            }
-            options={EDITOR_OPTIONS}
-          />
+        <div className="border rounded-xl p-4 flex-1 min-h-0">
+          <div className="overflow-y-auto overflow-x-hidden h-full">
+            <div ref={containerRef}>
+              <Editor
+                key={row ? JSON.stringify(rowId) : "empty"}
+                onMount={handleMount}
+                onValidate={(markers) => {
+                  const errors = markers.filter((m) => m.severity === 8);
+                  setHasValidationErrors(errors.length > 0);
+                }}
+                theme="vs"
+                defaultLanguage="json"
+                defaultValue={
+                  isInsert
+                    ? defaultFromColumns(table?.columns ?? [])
+                    : JSON.stringify(row, null, 2)
+                }
+                options={EDITOR_OPTIONS}
+              />
+            </div>
+          </div>
         </div>
         {pgError && (
           <Alert variant="destructive">
