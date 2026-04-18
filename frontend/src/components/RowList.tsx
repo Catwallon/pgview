@@ -14,7 +14,7 @@ import { formatDisplayValue } from "@/utils/formatDisplayValue";
 import { getRowId } from "@/utils/getRowId";
 import { ChevronUp, Key } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 const CELL_HEIGHT = 40;
 
