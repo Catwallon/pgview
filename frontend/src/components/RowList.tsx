@@ -16,6 +16,7 @@ import { ChevronUp, Key } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
 import { useShallow } from "zustand/shallow";
+import { formatDisplayType } from "@/utils/formatDisplayType";
 
 const CELL_HEIGHT = 40;
 
@@ -106,7 +107,7 @@ export function RowList() {
                       <span>{col.name}</span>
                       <div className="flex items-center gap-1">
                         <p className="text-[9px] text-muted-foreground italic">
-                          {col.type}
+                          {formatDisplayType(col)}
                         </p>
                         {col.isPrimaryKey && (
                           <Key className="w-2.75 h-2.75 text-muted-foreground" />
