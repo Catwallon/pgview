@@ -72,97 +72,95 @@ export function RowList() {
       ref={ref}
       className="flex flex-col h-full overflow-x-auto overflow-y-hidden "
     >
-      <div className="border-b">
-        <Table>
-          <TableHeader>
-            <TableRow className={isTablePlaceholder ? "opacity-50" : ""}>
-              {table?.columns &&
-                table.columns.map((col) => (
-                  <TableHead
-                    key={col.name}
-                    style={{ height: `${cellHeight}px` }}
-                    className="bg-gray-50 group cursor-pointer"
-                    onClick={() => {
-                      if (sort?.column === col.name) {
-                        setSort(
-                          sort.direction === "asc"
-                            ? { column: col.name, direction: "desc" }
-                            : sort.direction === "desc"
-                              ? null
-                              : { column: col.name, direction: "asc" },
-                        );
-                      } else {
-                        setSort({ column: col.name, direction: "asc" });
-                      }
-                    }}
-                  >
-                    <div className="flex items-center w-full">
-                      <div className="flex flex-col mr-4">
-                        <span>{col.name}</span>
-                        <div className="flex items-center gap-1">
-                          <p className="text-[9px] text-muted-foreground italic">
-                            {col.type}
-                          </p>
-                          {col.isPrimaryKey && (
-                            <Key className="w-2.75 h-2.75 text-muted-foreground" />
-                          )}
-                        </div>
-                      </div>
-                      <ChevronUp
-                        className={cn(
-                          "size-4 ml-auto transition-all group-hover:opacity-100",
-                          sort?.column === col.name
-                            ? sort?.direction === "desc"
-                              ? "opacity-50 rotate-180"
-                              : "opacity-50 rotate-0"
-                            : "opacity-0",
-                        )}
-                      />
-                    </div>
-                  </TableHead>
-                ))}
-            </TableRow>
-          </TableHeader>
-          {table && rows && (
-            <TableBody>
-              {rows.items.map((row) => (
-                <TableRow
-                  key={JSON.stringify(row)}
-                  className={isRowPlaceholder ? "opacity-50" : ""}
+      <Table>
+        <TableHeader>
+          <TableRow className={isTablePlaceholder ? "opacity-50" : ""}>
+            {table?.columns &&
+              table.columns.map((col) => (
+                <TableHead
+                  key={col.name}
+                  style={{ height: `${cellHeight}px` }}
+                  className="bg-gray-50 group cursor-pointer"
                   onClick={() => {
-                    if (window.getSelection()?.toString()) return;
-                    setRow(getRowId(table, row));
-                    setRowDialogMode("edit");
-                    setOpenRowDialog(true);
+                    if (sort?.column === col.name) {
+                      setSort(
+                        sort.direction === "asc"
+                          ? { column: col.name, direction: "desc" }
+                          : sort.direction === "desc"
+                            ? null
+                            : { column: col.name, direction: "asc" },
+                      );
+                    } else {
+                      setSort({ column: col.name, direction: "asc" });
+                    }
                   }}
                 >
-                  {Object.entries(row).map(([key, value]) => (
-                    <TableCell height={cellHeight} key={key}>
-                      <p
-                        className={
-                          isEmpty(value) || isNull(value)
-                            ? "text-muted-foreground italic"
-                            : ""
-                        }
-                      >
-                        {isEmpty(value)
-                          ? "empty"
-                          : isNull(value)
-                            ? "null"
-                            : table?.columns &&
-                              formatDisplayValue(
-                                table.columns.find((col) => col.name === key),
-                                value,
-                              )}
-                      </p>
-                    </TableCell>
-                  ))}
-                </TableRow>
+                  <div className="flex items-center w-full">
+                    <div className="flex flex-col mr-4">
+                      <span>{col.name}</span>
+                      <div className="flex items-center gap-1">
+                        <p className="text-[9px] text-muted-foreground italic">
+                          {col.type}
+                        </p>
+                        {col.isPrimaryKey && (
+                          <Key className="w-2.75 h-2.75 text-muted-foreground" />
+                        )}
+                      </div>
+                    </div>
+                    <ChevronUp
+                      className={cn(
+                        "size-4 ml-auto transition-all group-hover:opacity-100",
+                        sort?.column === col.name
+                          ? sort?.direction === "desc"
+                            ? "opacity-50 rotate-180"
+                            : "opacity-50 rotate-0"
+                          : "opacity-0",
+                      )}
+                    />
+                  </div>
+                </TableHead>
               ))}
-            </TableBody>
-          )}
-        </Table>
-      </div>
+          </TableRow>
+        </TableHeader>
+        {table && rows && (
+          <TableBody className="border-b">
+            {rows.items.map((row) => (
+              <TableRow
+                key={JSON.stringify(row)}
+                className={isRowPlaceholder ? "opacity-50" : ""}
+                onClick={() => {
+                  if (window.getSelection()?.toString()) return;
+                  setRow(getRowId(table, row));
+                  setRowDialogMode("edit");
+                  setOpenRowDialog(true);
+                }}
+              >
+                {Object.entries(row).map(([key, value]) => (
+                  <TableCell height={cellHeight} key={key}>
+                    <p
+                      className={
+                        isEmpty(value) || isNull(value)
+                          ? "text-muted-foreground italic"
+                          : ""
+                      }
+                    >
+                      {isEmpty(value)
+                        ? "empty"
+                        : isNull(value)
+                          ? "null"
+                          : table?.columns &&
+                            formatDisplayValue(
+                              table.columns.find((col) => col.name === key),
+                              value,
+                            )}
+                    </p>
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        )}
+      </Table>
       {rows && rows.items.length === 0 && (
         <div className="flex flex-1 items-center justify-center">
           <p className="text-xl text-gray-500">Table is empty</p>
