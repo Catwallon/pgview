@@ -7,7 +7,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "@/components/shadcn-ui/pagination";
 import { useAppStore } from "@/stores/useAppStore";
 
 export function RowPagination({

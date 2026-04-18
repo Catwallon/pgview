@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/shadcn-ui/input";
 import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
 

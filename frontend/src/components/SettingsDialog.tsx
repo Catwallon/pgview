@@ -3,11 +3,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/shadcn-ui/dialog";
 import { useUIStore } from "@/stores/useUIStore";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Label } from "./ui/label";
-import { Button } from "./ui/button";
+import { RadioGroup, RadioGroupItem } from "./shadcn-ui/radio-group";
+import { Label } from "./shadcn-ui/label";
+import { Button } from "./shadcn-ui/button";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 export function SettingsDialog() {
   const openSettings = useUIStore((state) => state.openSettings);

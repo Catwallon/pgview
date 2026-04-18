@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
-import { Button } from "./ui/button";
-import { Spinner } from "./ui/spinner";
+import { Button } from "./shadcn-ui/button";
+import { Spinner } from "./shadcn-ui/spinner";
 
 interface LoadingButtonProps extends ComponentProps<typeof Button> {
   loading?: boolean;

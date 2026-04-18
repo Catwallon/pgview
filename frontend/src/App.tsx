@@ -1,4 +1,4 @@
-import { TooltipProvider } from "./components/ui/tooltip";
+import { TooltipProvider } from "./components/shadcn-ui/tooltip";
 import { AppLayout } from "./layouts/AppLayout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 

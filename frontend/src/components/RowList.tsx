@@ -5,7 +5,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/shadcn-ui/table";
 import { useTable } from "@/hooks/useTable";
 import { useRows } from "@/hooks/useRows";
 import { useAppStore } from "@/stores/useAppStore";

@@ -1,6 +1,6 @@
 import { useState, type ComponentProps } from "react";
 import { LoadingButton } from "./LoadingButton";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./shadcn-ui/tooltip";
 
 interface TooltipButtonProps extends ComponentProps<typeof LoadingButton> {
   tooltip: string;

@@ -3,7 +3,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/shadcn-ui/dialog";
 import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { useAppStore } from "@/stores/useAppStore";
@@ -12,7 +12,7 @@ import { useUIStore } from "@/stores/useUIStore";
 import { useUpdateRows } from "@/hooks/useUpdateRows";
 import { useDeleteRows } from "@/hooks/useDeleteRows";
 import { schemaFromColumns } from "@/utils/schemaFromColumns";
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "./shadcn-ui/alert";
 import { CircleAlert } from "lucide-react";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { initVimMode } from "monaco-vim";
