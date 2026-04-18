@@ -1,5 +1,7 @@
 import type { TableFullResponse } from "@pgview/shared-types";
 
+const MAX_LENGTH = 36;
+
 export function formatDisplayValue(
   col: TableFullResponse["columns"][number] | undefined,
   value: unknown,
@@ -45,12 +47,14 @@ export function formatDisplayValue(
     case "xml":
     case "bpchar":
     case "varchar":
-    case "text":
-      return String(value);
+    case "text": {
+      const str = String(value);
+      return str.length > MAX_LENGTH ? str.slice(0, MAX_LENGTH) + "..." : str;
+    }
     case "json":
     case "jsonb": {
       const str = JSON.stringify(value).replace(/\n/g, " ");
-      return str.length > 20 ? str.slice(0, 20) + "..." : str;
+      return str.length > MAX_LENGTH ? str.slice(0, MAX_LENGTH) + "..." : str;
     }
     default:
       return String(value);

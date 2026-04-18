@@ -44,12 +44,12 @@ CREATE TABLE posts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-insert into posts (title, content, author_id)
-select 
+INSERT INTO  posts (title, content, author_id)
+SELECT 
     'Post ' || i,
-    'Content for post ' || i,
-    (select id from users order by random() limit 1)
-from generate_series(1, 1000) as i;
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    (SELECT id FROM users ORDER BY random() LIMIT 1)
+FROM generate_series(1, 1000) AS i;
 
 \c test-db
 
@@ -278,8 +278,8 @@ INSERT INTO types (
 CREATE TABLE multiple_pk (
     id1 UUID NOT NULL DEFAULT gen_random_uuid(),
     id2 UUID NOT NULL DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL,
+    value VARCHAR(100) NOT NULL,
     PRIMARY KEY (id1, id2)
 );
 
-insert into multiple_pk (name) values ('Hello PG');
+INSERT INTO multiple_pk (value) VALUES ('Hello PG');
