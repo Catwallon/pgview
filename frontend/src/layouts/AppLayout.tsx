@@ -19,11 +19,9 @@ export function AppLayout() {
     useShallow((state) => ({
       dbName: state.dbName,
       tableName: state.tableName,
-      rowId: state.rowId,
       page: state.page,
       limit: state.limit,
       query: state.query,
-      sort: state.sort,
     })),
   );
   const rows = useRows(
@@ -35,15 +33,14 @@ export function AppLayout() {
   );
 
   return (
-    <div className="flex h-screen">
-      <nav className="fixed left-0 top-0 h-screen w-64 border-r bg-sidebar flex flex-col">
-        <div className="flex items-center ml-4 gap-2 my-4">
+    <div className="flex h-screen overflow-hidden">
+      <nav className="shrink-0 w-64 border-r bg-sidebar flex flex-col">
+        <div className="flex items-center p-4 gap-2 mb-4 border-b">
           <img src={Logo} alt="logo" className="w-12 h-12 dark:invert" />
           <h1 className="text-4xl font-semibold italic tracking-tight">
             PGVIEW
           </h1>
         </div>
-        <div className="mb-4 border-t" />
         <div className="flex-1 overflow-y-auto">
           <DatabaseTree />
         </div>
@@ -63,27 +60,21 @@ export function AppLayout() {
           </a>
         </div>
       </nav>
-      <main className="ml-64 min-w-0 flex-1 bg-background">
+      <main className="min-w-0  min-h-0 flex flex-col overflow-hidden flex-1 bg-background">
         {tableName ? (
           <>
             <Toolbar />
-            <p className="ml-2 mb-2 text-xs muted-foreground">
+            <p className="ml-2 mb-2 text-xs text-muted-foreground">
               Showing {rows.data?.items.length} of {rows.data?.totalItems} rows
             </p>
-            <div className="border-b" />
-            <div
-              className="flex flex-col"
-              style={{ height: "calc(100vh - 160px)" }}
-            >
-              <RowList />
-            </div>
+            <RowList />
             <div className="my-4">
               <RowPagination visiblePageCount={5} />
             </div>
           </>
         ) : (
           <div className="flex h-full items-center justify-center">
-            <p className="text-xl text-gray-500">
+            <p className="text-xl text-muted-foreground">
               Select a table to view its data
             </p>
           </div>

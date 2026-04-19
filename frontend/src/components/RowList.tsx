@@ -75,13 +75,13 @@ export function RowList() {
   }, [setLimit]);
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="flex flex-col h-full relative overflow-hidden">
       <div
         ref={ref}
         className="flex flex-col h-full overflow-x-auto overflow-y-hidden border-b"
       >
         <Table>
-          <TableHeader>
+          <TableHeader className="border-t">
             <TableRow className={isTablePlaceholder ? "opacity-50" : ""}>
               {table?.columns &&
                 table.columns.map((col) => (
