@@ -57,9 +57,9 @@ export function AppLayout() {
 
   return (
     <div className="flex h-screen">
-      <nav className="fixed left-0 top-0 h-screen w-64 border-r bg-gray-50 flex flex-col">
+      <nav className="fixed left-0 top-0 h-screen w-64 border-r bg-sidebar flex flex-col">
         <div className="flex items-center ml-4 gap-2 my-4">
-          <img src={Logo} alt="logo" className="w-12 h-12" />
+          <img src={Logo} alt="logo" className="w-12 h-12 dark:invert" />
           <h1 className="text-4xl font-semibold italic tracking-tight">
             PGVIEW
           </h1>
@@ -84,7 +84,7 @@ export function AppLayout() {
           </a>
         </div>
       </nav>
-      <main className="ml-64 min-w-0 flex-1 bg-white">
+      <main className="ml-64 min-w-0 flex-1 bg-background">
         {tableName ? (
           <>
             <div className="p-4 flex gap-2">

@@ -89,6 +89,7 @@ export function RowDialog() {
   const rowDialogMode = useUIStore((state) => state.rowDialogMode);
   const isInsert = rowDialogMode === "insert";
   const row = findRow(rows?.items ?? [], rowId ?? {});
+  const darkMode = useSettingsStore((state) => state.darkMode);
 
   function resetAll() {
     insertRow.reset();
@@ -159,6 +160,17 @@ export function RowDialog() {
 
   function handleMount(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
     editorRef.current = editor;
+
+    monaco.editor.defineTheme("custom", {
+      base: darkMode ? "vs-dark" : "vs",
+      inherit: true,
+      rules: [],
+      colors: {
+        "editor.background": darkMode ? "#0a0a0a" : "#ffffff",
+      },
+    });
+
+    monaco.editor.setTheme("custom");
 
     const updateHeight = () => {
       const contentHeight = editor.getContentHeight();
@@ -236,7 +248,6 @@ export function RowDialog() {
                   const errors = markers.filter((m) => m.severity === 8);
                   setHasValidationErrors(errors.length > 0);
                 }}
-                theme="vs"
                 defaultLanguage="json"
                 defaultValue={
                   isInsert

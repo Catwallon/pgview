@@ -88,7 +88,7 @@ export function RowList() {
                   <TableHead
                     key={col.name}
                     style={{ height: `${cellHeight}px` }}
-                    className="bg-gray-50 group cursor-pointer"
+                    className="bg-sidebar group cursor-pointer"
                     onClick={() => {
                       if (sort?.column === col.name) {
                         setSort(
