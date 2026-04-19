@@ -25,14 +25,16 @@ export const fetchGetRows = (
   tableName: string,
   page: number,
   limit: number,
-  query: string,
+  query?: string,
   sort?: { column: string; direction: "asc" | "desc" },
 ): Promise<Pagination<RowResponse>> => {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
-    query,
   });
+  if (query) {
+    params.append("query", query);
+  }
   if (sort) {
     params.append("sort", `${sort.column}:${sort.direction}`);
   }

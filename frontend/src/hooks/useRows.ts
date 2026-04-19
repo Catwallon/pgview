@@ -6,7 +6,7 @@ export const useRows = (
   tableName: string | null,
   page: number,
   limit: number,
-  query: string,
+  query?: string,
   sort?: { column: string; direction: "asc" | "desc" },
 ) => {
   return useQuery({

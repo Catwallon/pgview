@@ -15,7 +15,7 @@ export class RowController {
     const { limit, page, query, sort } = request.query as {
       limit: number;
       page: number;
-      query: string;
+      query?: string;
       sort?: string;
     };
 

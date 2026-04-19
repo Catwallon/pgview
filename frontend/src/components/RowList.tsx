@@ -48,7 +48,7 @@ export function RowList() {
     tableName,
     page,
     limit,
-    query,
+    query ? query : undefined,
     sort ? sort : undefined,
   );
 

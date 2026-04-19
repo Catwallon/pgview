@@ -7,14 +7,14 @@ interface AppState {
   rowId: Record<string, string> | null;
   page: number;
   limit: number;
-  query: string;
+  query: string | null;
   sort: { column: string; direction: "asc" | "desc" } | null;
   setDatabase: (dbName: string) => void;
   setTable: (tableName: string) => void;
   setRow: (rowId: Record<string, string>) => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
-  setQuery: (query: string) => void;
+  setQuery: (query: string | null) => void;
   setSort: (sort: { column: string; direction: "asc" | "desc" } | null) => void;
 }
 
@@ -32,7 +32,7 @@ export const useAppStore = create<AppState>((set) => ({
   rowId: null,
   page: 1,
   limit: 1,
-  query: "",
+  query: null,
   sort: null,
 
   setDatabase: (dbName: string) => {
@@ -42,14 +42,14 @@ export const useAppStore = create<AppState>((set) => ({
       tableName: null,
       page: 1,
       rowId: null,
-      query: "",
+      query: null,
       sort: null,
     });
   },
 
   setTable: (tableName: string) => {
     updateQueryParams({ table: tableName });
-    set({ tableName, page: 1, rowId: null, query: "", sort: null });
+    set({ tableName, page: 1, rowId: null, query: null, sort: null });
   },
 
   setRow: (rowId: Record<string, string>) => {
@@ -70,7 +70,7 @@ export const useAppStore = create<AppState>((set) => ({
     set({ limit });
   },
 
-  setQuery: (query: string) => {
+  setQuery: (query: string | null) => {
     set({ query, page: 1 });
   },
 

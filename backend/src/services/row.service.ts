@@ -15,26 +15,33 @@ export class RowService {
     tableName: string,
     limit: number,
     page: number,
-    query: string,
+    query?: string,
     sort?: { column: string; direction: "asc" | "desc" },
   ): Promise<Pagination<RowResponse>> {
     const client = this.clientService.get(dbName);
 
     const table = await this.tableService.get(dbName, tableName);
-    const whereClause = table.columns
-      .map((c) => `${c.name}::text ILIKE $1`)
-      .join(" OR ");
+
+    const whereClause = query
+      ? "WHERE " +
+        table.columns.map((c) => `${c.name}::text ILIKE $1`).join(" OR ")
+      : "";
+
+    const sortClause = sort
+      ? `ORDER BY "${sort.column}" ${sort.direction}`
+      : "";
 
     const offset = (page - 1) * limit;
 
     const [rowsRes, countRes] = await Promise.all([
       client.query(
-        `SELECT * FROM ${tableName} WHERE ${whereClause} ${sort ? `ORDER BY "${sort.column}" ${sort.direction}` : ""} LIMIT ${limit} OFFSET ${offset};`,
-        [`%${query}%`],
+        `SELECT * FROM ${tableName} ${whereClause} ${sortClause} LIMIT ${limit} OFFSET ${offset};`,
+        query ? [`${query}%`] : undefined,
       ),
-      client.query(`SELECT COUNT(*) FROM ${tableName} WHERE ${whereClause};`, [
-        `%${query}%`,
-      ]),
+      client.query(
+        `SELECT COUNT(*) FROM ${tableName} ${whereClause};`,
+        query ? [`${query}%`] : undefined,
+      ),
     ]);
 
     return {

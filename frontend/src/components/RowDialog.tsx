@@ -79,7 +79,7 @@ export function RowDialog() {
     tableName,
     page,
     limit,
-    query,
+    query ? query : undefined,
     sort ? sort : undefined,
   );
   const insertRow = useInsertRow();

@@ -32,7 +32,13 @@ export function AppLayout() {
       sort: state.sort,
     })),
   );
-  const rows = useRows(dbName, tableName, page, limit, query);
+  const rows = useRows(
+    dbName,
+    tableName,
+    page,
+    limit,
+    query ? query : undefined,
+  );
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
 

@@ -22,7 +22,13 @@ export function RowPagination({
   const limit = useAppStore((state) => state.limit);
   const query = useAppStore((state) => state.query);
 
-  const { data: rows } = useRows(dbName, tableName, page, limit, query);
+  const { data: rows } = useRows(
+    dbName,
+    tableName,
+    page,
+    limit,
+    query ? query : undefined,
+  );
   if (!rows) return null;
 
   const half = Math.floor(visiblePageCount / 2);

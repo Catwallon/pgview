@@ -19,8 +19,10 @@ export function RowSearch() {
   return (
     <div className="flex gap-2 w-full max-w-lg min-w-28">
       <Input
-        value={localQuery}
-        onChange={(e) => setLocalQuery(e.target.value)}
+        value={localQuery ? localQuery : undefined}
+        onChange={(e) =>
+          setLocalQuery(e.target.value.length > 0 ? e.target.value : null)
+        }
         placeholder="Search..."
       />
     </div>
