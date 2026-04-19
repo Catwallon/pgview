@@ -12,8 +12,14 @@ import { useSettingsStore } from "@/stores/useSettingsStore";
 export function SettingsDialog() {
   const openSettings = useUIStore((state) => state.openSettings);
   const setOpenSettings = useUIStore((state) => state.setOpenSettings);
+  const theme = useSettingsStore((state) => state.theme);
+  const setTheme = useSettingsStore((state) => state.setTheme);
   const inputMode = useSettingsStore((state) => state.inputMode);
   const setInputMode = useSettingsStore((state) => state.setInputMode);
+
+  const handleThemeChange = (value: "light" | "dark" | "system") => {
+    setTheme(value);
+  };
 
   const handleInputModeChange = (value: "vscode" | "vim") => {
     setInputMode(value);
@@ -30,6 +36,29 @@ export function SettingsDialog() {
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
+        <div className="border rounded-lg p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-4">
+            Theme
+          </p>
+          <RadioGroup
+            onValueChange={handleThemeChange}
+            defaultValue={theme}
+            className="w-fit"
+          >
+            <div className="flex items-center gap-3">
+              <RadioGroupItem value="system" id="r1" />
+              <Label htmlFor="r1">System (default)</Label>
+            </div>
+            <div className="flex items-center gap-3">
+              <RadioGroupItem value="light" id="r2" />
+              <Label htmlFor="r2">Light</Label>
+            </div>
+            <div className="flex items-center gap-3">
+              <RadioGroupItem value="dark" id="r3" />
+              <Label htmlFor="r3">Dark</Label>
+            </div>
+          </RadioGroup>
+        </div>
         <div className="border rounded-lg p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-4">
             Input mode

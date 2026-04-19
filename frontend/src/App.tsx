@@ -8,24 +8,28 @@ const queryClient = new QueryClient();
 
 function App() {
   const setDarkMode = useSettingsStore((state) => state.setDarkMode);
+  const theme = useSettingsStore((state) => state.theme);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyDark = (isDark: boolean) => {
       setDarkMode(isDark);
+      document.documentElement.classList.toggle("dark", isDark);
       const favicon =
         document.querySelector<HTMLLinkElement>("link[rel='icon']");
       if (favicon) favicon.href = isDark ? "/logo-dark.svg" : "/logo.svg";
     };
 
-    applyDark(media.matches);
+    if (theme === "system") {
+      applyDark(media.matches);
+      const handler = (e: MediaQueryListEvent) => applyDark(e.matches);
+      media.addEventListener("change", handler);
+      return () => media.removeEventListener("change", handler);
+    }
 
-    const handler = (e: MediaQueryListEvent) => applyDark(e.matches);
-    media.addEventListener("change", handler);
-
-    return () => media.removeEventListener("change", handler);
-  }, [setDarkMode]);
+    applyDark(theme === "dark");
+  }, [setDarkMode, theme]);
 
   return (
     <QueryClientProvider client={queryClient}>
