@@ -3,6 +3,7 @@ import { RowList } from "@/components/RowList";
 import { RowPagination } from "@/components/RowPagination";
 import { useAppStore } from "@/stores/useAppStore";
 import Logo from "@/assets/logo.svg";
+import Github from "@/assets/github.svg";
 import { Button } from "@/components/shadcn-ui/button";
 import { useRows } from "@/hooks/useRows";
 import { useUIStore } from "@/stores/useUIStore";
@@ -52,12 +53,22 @@ export function AppLayout() {
           >
             <Settings /> Settings
           </Button>
-          <a
-            className="text-xs text-gray-400"
-            href="https://github.com/catwallon/pgview"
-          >
-            {import.meta.env.VITE_PGVIEW_VERSION} · Made by Catwallon
-          </a>
+          <div className="flex items-center gap-1">
+            <a
+              className="flex items-center gap-1 text-xs text-muted-foreground"
+              href="https://github.com/catwallon/pgview"
+            >
+              <img
+                src={Github}
+                alt="github"
+                className="w-3.5 h-3.5 dark:invert opacity-50"
+              />
+              {"GitHub  ·  "}
+            </a>
+            <p className="text-xs text-muted-foreground">
+              {import.meta.env.VITE_PGVIEW_VERSION}
+            </p>
+          </div>
         </div>
       </nav>
       <main className="min-w-0  min-h-0 flex flex-col overflow-hidden flex-1 bg-background">
