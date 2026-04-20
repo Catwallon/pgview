@@ -1,12 +1,12 @@
 {
   "name": "@pgview/backend",
-  "main": "dist/index.js",
+  "main": "dist/pgview",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development tsx --watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "dev": "NODE_ENV=development bun --watch src/index.ts",
+    "build": "bun build src/index.ts --compile --outfile dist/pgview",
+    "start": "dist/index.js"
   },
   "keywords": [],
   "dependencies": {

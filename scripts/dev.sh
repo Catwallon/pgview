@@ -22,6 +22,5 @@ done
 
 docker exec -i postgres psql -U $PGVIEW_DB_USER -d $PGVIEW_DB_NAME < "$PROJECT_DIR/scripts/init.sql"
 
-pnpm install --prefix "$PROJECT_DIR"
-
-concurrently "pnpm --filter @pgview/backend dev" "pnpm --filter @pgview/frontend dev"
+bun install
+bun run dev

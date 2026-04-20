@@ -1,33 +1,29 @@
-FROM node:24-alpine AS builder
+FROM oven/bun:1.3.13-alpine AS builder
 
 ARG PGVIEW_VERSION
 ENV VITE_PGVIEW_VERSION=$PGVIEW_VERSION
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-COPY pnpm-workspace.yaml ./
-COPY package.json pnpm-lock.yaml ./
+COPY package.json bun.lock ./
 COPY backend/package.json ./backend/
 COPY frontend/package.json ./frontend/
 COPY shared-types/package.json ./shared-types/
 
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+ENV NODE_ENV=production
+ENV BUN_INSTALL_CACHE_DIR=/root/.bun/install/cache
+RUN --mount=type=cache,id=bun,target=/root/.bun/install/cache bun install --frozen-lockfile
 
 COPY . .
-RUN pnpm build
-RUN pnpm deploy --filter @pgview/backend --prod /app/backend-deploy
+RUN bun run build
 
-FROM node:24-alpine
+FROM alpine:3.22.4
 
-WORKDIR /app
+RUN apk add --no-cache libstdc++
 
-COPY --from=builder /app/backend/dist ./backend/dist
-COPY --from=builder /app/frontend/dist ./frontend/dist
-COPY --from=builder /app/backend-deploy/node_modules ./backend/node_modules
-COPY --from=builder /app/backend-deploy/package.json ./backend/package.json
+COPY --from=builder /app/backend/dist/pgview /pgview
+COPY --from=builder /app/frontend/dist /public
 
 EXPOSE 8080
 ENV NODE_ENV=production
-CMD ["node", "./backend/dist/index.js"]
+CMD ["/pgview"]

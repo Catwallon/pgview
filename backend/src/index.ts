@@ -1,9 +1,6 @@
 import "reflect-metadata";
-import { fileURLToPath } from "url";
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
-import path from "path";
-import { exit } from "process";
 import cors from "@fastify/cors";
 import { errorHandler } from "./utils/errorHandler.util.js";
 import { DatabaseController } from "./controllers/database.controller.js";
@@ -64,11 +61,8 @@ fastify.delete(
 fastify.setErrorHandler(errorHandler);
 
 if (process.env.NODE_ENV === "production") {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
   fastify.register(fastifyStatic, {
-    root: path.join(__dirname, "../../frontend/dist"),
+    root: "/public",
     prefix: "/",
   });
 

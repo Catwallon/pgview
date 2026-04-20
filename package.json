@@ -3,8 +3,16 @@
   "author": "Catwallon",
   "license": "MIT",
   "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared-types"
+  ],
   "scripts": {
-    "dev": "pnpm -r dev",
-    "build": "pnpm -r build"
+    "dev": "bun --filter '*' dev",
+    "build": "bun --filter '*' build"
+  },
+  "dependencies": {
+    "pgview": "/home/catwallon/Documents/pgview"
   }
 }

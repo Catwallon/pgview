@@ -1,5 +1,0 @@
-injectWorkspacePackages: true
-packages:
-  - "frontend"
-  - "backend"
-  - "shared-types"
