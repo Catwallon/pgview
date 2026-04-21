@@ -1,23 +1,19 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { inject, singleton } from "tsyringe";
 import { RowService } from "../services/row.service.js";
+import { Context } from "hono";
 
 @singleton()
 export class RowController {
   constructor(@inject(RowService) private rowService: RowService) {}
 
-  async getAll(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { dbName, tableName } = request.params as {
+  async getAll(c: Context): Promise<Response> {
+    const { dbName, tableName } = c.req.param() as {
       dbName: string;
       tableName: string;
     };
 
-    const { limit, page, query, sort } = request.query as {
-      limit: number;
-      page: number;
-      query?: string;
-      sort?: string;
-    };
+    const { limit, page, query, sort } = c.req.query();
 
     let parsedSort = undefined;
     if (sort) {
@@ -31,17 +27,17 @@ export class RowController {
     const rows = await this.rowService.getMany(
       dbName,
       tableName,
-      limit,
-      page,
+      limit ? parseInt(limit) : 10,
+      page ? parseInt(page) : 1,
       query,
       parsedSort,
     );
 
-    reply.send(rows);
+    return c.json(rows);
   }
 
-  async get(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { dbName, tableName, rowId } = request.params as {
+  async get(c: Context): Promise<Response> {
+    const { dbName, tableName, rowId } = c.req.param() as {
       dbName: string;
       tableName: string;
       rowId: string;
@@ -49,18 +45,18 @@ export class RowController {
 
     const row = await this.rowService.get(dbName, tableName, rowId);
 
-    reply.send(row);
+    return c.json(row);
   }
 
-  async editMany(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { dbName, tableName } = request.params as {
+  async editMany(c: Context): Promise<Response> {
+    const { dbName, tableName } = c.req.param() as {
       dbName: string;
       tableName: string;
     };
 
-    const filters = request.query as Record<string, string>;
+    const filters = c.req.query() as Record<string, string>;
 
-    const updateData = request.body as Record<string, string>;
+    const updateData = await c.req.json();
 
     const row = await this.rowService.editMany(
       dbName,
@@ -69,35 +65,32 @@ export class RowController {
       updateData,
     );
 
-    reply.send(row);
+    return c.json(row);
   }
 
-  async create(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { dbName, tableName } = request.params as {
+  async create(c: Context): Promise<Response> {
+    const { dbName, tableName } = c.req.param() as {
       dbName: string;
       tableName: string;
     };
 
-    const createData = request.body as Record<string, string>;
+    const createData = await c.req.json();
 
     const row = await this.rowService.create(dbName, tableName, createData);
 
-    reply.send(row);
+    return c.json(row);
   }
 
-  async deleteMany(
-    request: FastifyRequest,
-    reply: FastifyReply,
-  ): Promise<void> {
-    const { dbName, tableName } = request.params as {
+  async deleteMany(c: Context): Promise<Response> {
+    const { dbName, tableName } = c.req.param() as {
       dbName: string;
       tableName: string;
     };
 
-    const filters = request.query as Record<string, string>;
+    const filters = c.req.query() as Record<string, string>;
 
     const row = await this.rowService.deleteMany(dbName, tableName, filters);
 
-    reply.send(row);
+    return c.json(row);
   }
 }

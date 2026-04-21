@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import { Context } from "hono";
 import { DatabaseService } from "../services/database.service.js";
 import { inject, singleton } from "tsyringe";
 
@@ -8,9 +8,9 @@ export class DatabaseController {
     @inject(DatabaseService) private databaseService: DatabaseService,
   ) {}
 
-  async getAll(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  async getAll(c: Context): Promise<Response> {
     const dbs = await this.databaseService.getAll();
 
-    reply.send(dbs);
+    return c.json(dbs);
   }
 }

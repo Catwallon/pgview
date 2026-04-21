@@ -10,15 +10,15 @@
   },
   "keywords": [],
   "dependencies": {
-    "@fastify/cors": "^11.2.0",
-    "@fastify/static": "^9.0.0",
     "fastify": "^5.7.4",
+    "hono": "^4.12.14",
     "pg": "^8.19.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0"
   },
   "devDependencies": {
     "@pgview/shared-types": "workspace:*",
+    "@types/bun": "^1.3.12",
     "@types/node": "^25.3.2",
     "@types/pg": "^8.16.0",
     "ts-node": "^10.9.2",
