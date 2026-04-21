@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "dev": "bun --filter '*' dev",
-    "build": "bun --filter '*' build"
+    "build": "bun run --filter @pgview/frontend build && bun run --filter @pgview/backend build"
   },
   "dependencies": {
     "pgview": "/home/catwallon/Documents/pgview"

@@ -3,6 +3,8 @@ import { TooltipProvider } from "./components/shadcn-ui/tooltip";
 import { AppLayout } from "./layouts/AppLayout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useSettingsStore } from "./stores/useSettingsStore";
+import logo from "./assets/logo.svg";
+import logoDark from "./assets/logo-dark.svg";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +20,7 @@ function App() {
       document.documentElement.classList.toggle("dark", isDark);
       const favicon =
         document.querySelector<HTMLLinkElement>("link[rel='icon']");
-      if (favicon) favicon.href = isDark ? "/logo-dark.svg" : "/logo.svg";
+      if (favicon) favicon.href = isDark ? logoDark : logo;
     };
 
     if (theme === "system") {

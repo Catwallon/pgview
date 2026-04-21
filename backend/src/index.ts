@@ -6,21 +6,16 @@ import { RowController } from "./controllers/row.controller.js";
 import { initEnv } from "./config/env.config.js";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import frontend from "../../frontend/dist/index.html";
 
-console.log("Starting PgView...");
+console.log("Starting PGView...");
 
 initEnv();
 
-const hono = new Hono();
+const app = new Hono();
 
-if (process.env.NODE_ENV === "production") {
-  const frontend = await Bun.file(
-    new URL("./public/index.html", import.meta.url),
-  ).text();
-
-  hono.get("/", (c) => c.html(frontend));
-} else {
-  hono.get(
+if (process.env.NODE_ENV === "development") {
+  app.get(
     "/*",
     cors({
       origin: "http://localhost:5173",
@@ -28,35 +23,40 @@ if (process.env.NODE_ENV === "production") {
   );
 }
 
-hono.get("/api/databases", async (c) => {
+app.get("/api/databases", async (c) => {
   return container.resolve(DatabaseController).getAll(c);
 });
 
-hono.get("/api/databases/:dbName/tables", async (c) => {
+app.get("/api/databases/:dbName/tables", async (c) => {
   return container.resolve(TableController).getAll(c);
 });
 
-hono.get("/api/databases/:dbName/tables/:tableName", async (c) => {
+app.get("/api/databases/:dbName/tables/:tableName", async (c) => {
   return container.resolve(TableController).get(c);
 });
 
-hono.get("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
+app.get("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
   return container.resolve(RowController).getAll(c);
 });
 
-hono.post("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
+app.post("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
   return container.resolve(RowController).create(c);
 });
 
-hono.put("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
+app.put("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
   return container.resolve(RowController).editMany(c);
 });
 
-hono.delete("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
+app.delete("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
   return container.resolve(RowController).deleteMany(c);
 });
 
-export default {
+Bun.serve({
   port: 8080,
-  fetch: hono.fetch,
-};
+  routes: {
+    "/*": frontend,
+    "/api/*": app.fetch,
+  },
+});
+
+console.log("PGView started on http://localhost:8080");

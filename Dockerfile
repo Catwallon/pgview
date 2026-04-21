@@ -22,7 +22,6 @@ FROM alpine:3.22.4
 RUN apk add --no-cache libstdc++
 
 COPY --from=builder /app/backend/dist/pgview /pgview
-COPY --from=builder /app/frontend/dist /public
 
 EXPOSE 8080
 ENV NODE_ENV=production
