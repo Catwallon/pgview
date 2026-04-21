@@ -4,7 +4,6 @@ import { DBConfig } from "../types/dbConfig.js";
 
 export const initEnv = () => {
   const missing = [
-    "NODE_ENV",
     "PGVIEW_DB_NAME",
     "PGVIEW_DB_USER",
     "PGVIEW_DB_PASSWORD",
