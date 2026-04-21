@@ -3,14 +3,14 @@ import { DatabaseController } from "./controllers/database.controller.js";
 import { container } from "tsyringe";
 import { TableController } from "./controllers/table.controller.js";
 import { RowController } from "./controllers/row.controller.js";
-import { initEnv } from "./config/env.config.js";
+import { resolveDBConfig } from "./config/db.config.js";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import frontend from "../../frontend/dist/index.html";
 
 console.log("Starting PGView...");
 
-initEnv();
+resolveDBConfig();
 
 const app = new Hono();
 
