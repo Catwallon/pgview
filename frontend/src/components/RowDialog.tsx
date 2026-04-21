@@ -176,7 +176,6 @@ export function RowDialog() {
       const contentHeight = editor.getContentHeight();
       if (containerRef.current) {
         containerRef.current.style.height = `${contentHeight}px`;
-        editor.layout();
       }
     };
 
@@ -214,6 +213,8 @@ export function RowDialog() {
     const markers = monaco.editor.getModelMarkers();
     const errors = markers.filter((m: editor.IMarker) => m.severity === 8);
     setHasValidationErrors(errors.length > 0);
+
+    editor.focus();
   }
 
   const pgError = updateRow.error ?? insertRow.error ?? deleteRow.error;
