@@ -1,15 +1,13 @@
 {
   "name": "@pgview/backend",
-  "main": "dist/pgview",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development bun --watch src/index.ts",
-    "build": "bun build src/index.ts --compile --outfile dist/pgview",
-    "start": "dist/index.js"
+    "dev": "NODE_ENV=development bun --watch src/main.ts",
+    "build": "bun build src/main.ts --compile --outfile dist/pgview"
   },
-  "keywords": [],
   "dependencies": {
+    "@hono/node-server": "^2.0.0",
     "fastify": "^5.7.4",
     "hono": "^4.12.14",
     "pg": "^8.19.0",

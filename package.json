@@ -1,8 +1,36 @@
 {
   "name": "pgview",
+  "version": "0.9.2",
   "author": "Catwallon",
   "license": "MIT",
-  "private": true,
+  "homepage": "https://github.com/Catwallon/pgview",
+  "bin": {
+    "pgview": "./backend/dist/pgview"
+  },
+  "description": "A lightweight, minimal & modern web-based PostgreSQL database viewer and editor.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Catwallon/pgview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Catwallon/pgview/issues"
+  },
+  "keywords": [
+    "postgres",
+    "postgresql",
+    "database",
+    "db",
+    "viewer",
+    "visualizer",
+    "gui",
+    "admin",
+    "web",
+    "dashboard"
+  ],
+  "files": [
+    "backend/dist/pgview",
+    "README.md"
+  ],
   "workspaces": [
     "frontend",
     "backend",
@@ -10,9 +38,6 @@
   ],
   "scripts": {
     "dev": "bun --filter '*' dev",
-    "build": "bun run --filter @pgview/frontend build && bun run --filter @pgview/backend build"
-  },
-  "dependencies": {
-    "pgview": "/home/catwallon/Documents/pgview"
+    "build": "bun run --filter @catwallon/pgview-frontend build && bun run --filter @catwallon/pgview-backend build"
   }
 }
