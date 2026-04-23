@@ -10,7 +10,6 @@ COPY backend/package.json ./backend/
 COPY frontend/package.json ./frontend/
 COPY shared-types/package.json ./shared-types/
 
-ENV NODE_ENV=production
 ENV BUN_INSTALL_CACHE_DIR=/root/.bun/install/cache
 RUN --mount=type=cache,id=bun,target=/root/.bun/install/cache bun install --frozen-lockfile
 
@@ -24,5 +23,4 @@ RUN apk add --no-cache libstdc++
 COPY --from=builder /app/backend/dist/pgview /pgview
 
 EXPOSE 8080
-ENV NODE_ENV=production
 CMD ["/pgview"]
