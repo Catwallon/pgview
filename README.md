@@ -39,14 +39,15 @@ docker run -p 8080:8080 \
 
 PGView can be configured via environment variables or CLI arguments.
 
-| Environment variable | CLI argument | Default     |
-| -------------------- | ------------ | ----------- |
-| `PGVIEW_HOST`        | `--host`     | `localhost` |
-| `PGVIEW_PORT`        | `--port`     | `5432`      |
-| `PGVIEW_DBNAME`      | `--dbname`   | —           |
-| `PGVIEW_USER`        | `--user`     | —           |
-| `PGVIEW_PASSWORD`    | `--password` | —           |
-| `PGVIEW_URL`         | `--url`      | —           |
+| Environment variable | CLI argument    | Default     |
+| -------------------- | --------------- | ----------- |
+| `PGVIEW_HOST`        | `--host`        | `localhost` |
+| `PGVIEW_PORT`        | `--port`        | `5432`      |
+| `PGVIEW_DBNAME`      | `--dbname`      | —           |
+| `PGVIEW_USER`        | `--user`        | —           |
+| `PGVIEW_PASSWORD`    | `--password`    | —           |
+| `PGVIEW_URL`         | `--url`         | —           |
+| `PGVIEW_LISTEN_PORT` | `--listen-port` | `8080`      |
 
 - CLI arguments take precedence over their corresponding environment variables.
 - `PGVIEW_URL` / `--url` accept a full PostgreSQL connection string and take precedence over all individual parameters.

@@ -3,14 +3,31 @@ import { DatabaseController } from "./controllers/database.controller.js";
 import { container } from "tsyringe";
 import { TableController } from "./controllers/table.controller.js";
 import { RowController } from "./controllers/row.controller.js";
-import { resolveDBConfig } from "./config/db.config.js";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import frontend from "../../frontend/dist/index.html";
+import { parseArgs } from "util";
+import { resolveDBConfig } from "./config/db.config.js";
 
 console.log("Starting PGView...");
 
-resolveDBConfig();
+const { values: args } = parseArgs({
+  options: {
+    host: { type: "string" },
+    port: { type: "string" },
+    dbname: { type: "string" },
+    user: { type: "string" },
+    password: { type: "string" },
+    url: { type: "string" },
+    "listen-port": { type: "string" },
+  },
+});
+
+const port = parseInt(
+  args["listen-port"] ?? process.env.PGVIEW_LISTEN_PORT ?? "8080",
+);
+
+resolveDBConfig(args);
 
 const app = new Hono();
 
@@ -52,11 +69,11 @@ app.delete("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
 });
 
 Bun.serve({
-  port: 8080,
+  port,
   routes: {
     "/*": frontend,
     "/api/*": app.fetch,
   },
 });
 
-console.log("PGView started on http://localhost:8080");
+console.log(`PGView started on http://localhost:${port}`);
