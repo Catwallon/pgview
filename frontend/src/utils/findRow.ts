@@ -1,4 +1,4 @@
-import type { RowResponse } from "@pgview/shared-types";
+import type { RowResponse } from "@catwallon/pgview-types";
 
 export function findRow(
   rows: RowResponse[],

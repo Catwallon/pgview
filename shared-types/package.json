@@ -1,5 +1,5 @@
 {
-  "name": "@pgview/shared-types",
+  "name": "@catwallon/pgview-types",
   "types": "src/index.ts",
   "private": true,
   "type": "module",

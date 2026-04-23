@@ -1,4 +1,4 @@
-import type { RowResponse, TableFullResponse } from "@pgview/shared-types";
+import type { RowResponse, TableFullResponse } from "@catwallon/pgview-types";
 
 export function getRowId(
   table: TableFullResponse,

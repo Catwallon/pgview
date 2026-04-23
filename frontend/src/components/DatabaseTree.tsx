@@ -12,7 +12,7 @@ import { Database, SquareDashed, Table } from "lucide-react";
 import { useDatabases } from "@/hooks/useDatabases";
 import { useTables } from "@/hooks/useTables";
 import { useAppStore } from "@/stores/useAppStore";
-import type { DatabaseResponse } from "@pgview/shared-types";
+import type { DatabaseResponse } from "@catwallon/pgview-types";
 
 export function DatabaseTree() {
   const { data: databases } = useDatabases();

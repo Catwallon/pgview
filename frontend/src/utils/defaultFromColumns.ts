@@ -1,4 +1,4 @@
-import type { TableFullResponse } from "@pgview/shared-types";
+import type { TableFullResponse } from "@catwallon/pgview-types";
 
 export function defaultFromColumns(
   columns: TableFullResponse["columns"],

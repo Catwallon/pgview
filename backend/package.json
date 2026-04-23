@@ -1,5 +1,5 @@
 {
-  "name": "@pgview/backend",
+  "name": "@catwallon/pgview-backend",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,7 +13,7 @@
     "tsyringe": "^4.10.0"
   },
   "devDependencies": {
-    "@pgview/shared-types": "workspace:*",
+    "@catwallon/pgview-types": "workspace:*",
     "@types/bun": "^1.3.12",
     "@types/pg": "^8.16.0",
     "typescript": "^5.9.3"

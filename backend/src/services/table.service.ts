@@ -1,4 +1,7 @@
-import { TableSummaryResponse, TableFullResponse } from "@pgview/shared-types";
+import {
+  TableSummaryResponse,
+  TableFullResponse,
+} from "@catwallon/pgview-types";
 import { inject, singleton } from "tsyringe";
 import { ClientService } from "./client.service.js";
 

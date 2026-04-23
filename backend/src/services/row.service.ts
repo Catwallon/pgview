@@ -1,5 +1,5 @@
 import { inject, singleton } from "tsyringe";
-import { Pagination, RowResponse } from "@pgview/shared-types";
+import { Pagination, RowResponse } from "@catwallon/pgview-types";
 import { ClientService } from "./client.service.js";
 import { TableService } from "./table.service.js";
 

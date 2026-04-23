@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import type { DatabaseResponse } from "@pgview/shared-types";
+import type { DatabaseResponse } from "@catwallon/pgview-types";
 import { inject, singleton } from "tsyringe";
 import { ClientService } from "./client.service.js";
 

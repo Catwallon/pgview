@@ -5,7 +5,7 @@ import type {
   DatabaseResponse,
   TableSummaryResponse,
   TableFullResponse,
-} from "@pgview/shared-types";
+} from "@catwallon/pgview-types";
 
 export const fetchGetDatabases = (): Promise<DatabaseResponse[]> =>
   apiFetch("/databases");
