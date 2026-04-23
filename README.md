@@ -31,10 +31,7 @@ pgview --url postgresql://user:password@localhost:5432/mydb
 
 ```bash
 docker run -p 8080:8080 \
-  -e PGVIEW_DB_HOST=localhost \
-  -e PGVIEW_DB_NAME=mydb \
-  -e PGVIEW_DB_USER=myuser \
-  -e PGVIEW_DB_PASSWORD=mypassword \
+  -e PGVIEW_URL=postgresql://user:password@localhost:5432/mydb \
   catwallon/pgview
 ```
 
@@ -44,11 +41,12 @@ PGView can be configured via environment variables or CLI arguments.
 
 | Environment variable | CLI argument | Default     |
 | -------------------- | ------------ | ----------- |
-| `PGVIEW_DB_HOST`     | `--host`     | `localhost` |
-| `PGVIEW_DB_PORT`     | `--port`     | `5432`      |
-| `PGVIEW_DB_NAME`     | `--name`     | —           |
-| `PGVIEW_DB_USER`     | `--user`     | —           |
-| `PGVIEW_DB_PASSWORD` | `--password` | —           |
-| —                    | `--url`      | —           |
+| `PGVIEW_HOST`        | `--host`     | `localhost` |
+| `PGVIEW_PORT`        | `--port`     | `5432`      |
+| `PGVIEW_DBNAME`      | `--dbname`   | —           |
+| `PGVIEW_USER`        | `--user`     | —           |
+| `PGVIEW_PASSWORD`    | `--password` | —           |
+| `PGVIEW_URL`         | `--url`      | —           |
 
-> `--url` accepts a full PostgreSQL connection string and takes precedence over individual parameters.
+- CLI arguments take precedence over their corresponding environment variables.
+- `PGVIEW_URL` / `--url` accept a full PostgreSQL connection string and take precedence over all individual parameters.

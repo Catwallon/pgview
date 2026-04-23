@@ -16,53 +16,58 @@ function parseDatabaseUrl(url: string): DBConfig {
   return {
     host: parsed.hostname,
     port: parseInt(parsed.port),
-    name: parsed.pathname.slice(1),
+    dbName: parsed.pathname.slice(1),
     user: parsed.username,
     password: parsed.password,
   };
 }
 
 export const resolveDBConfig = () => {
-  const { values } = parseArgs({
+  const { values: args } = parseArgs({
     options: {
       host: { type: "string" },
       port: { type: "string" },
-      name: { type: "string" },
+      dbname: { type: "string" },
       user: { type: "string" },
       password: { type: "string" },
       url: { type: "string" },
     },
   });
 
-  let config: DBConfig;
+  const urlConfig = args.url
+    ? parseDatabaseUrl(args.url)
+    : process.env.PGVIEW_URL
+      ? parseDatabaseUrl(process.env.PGVIEW_URL)
+      : null;
 
-  if (values.url) {
-    config = parseDatabaseUrl(values.url);
-  } else {
-    config = {
-      host: values.host || process.env.PGVIEW_DB_HOST || "localhost",
-      port: parseInt(values.port || process.env.PGVIEW_DB_PORT || "5432"),
-      name: values.name || process.env.PGVIEW_DB_NAME!,
-      user: values.user || process.env.PGVIEW_DB_USER!,
-      password: values.password || process.env.PGVIEW_DB_PASSWORD!,
-    };
+  if (urlConfig) {
+    container.register<DBConfig>(DB_CONFIG, { useValue: urlConfig });
+    return;
+  }
 
-    const missing = Object.entries(config)
-      .filter(([_, value]) => !value)
-      .map(([key]) => `DB_${key.toUpperCase()}`);
+  const config = {
+    host: args.host ?? process.env.PGVIEW_HOST ?? "localhost",
+    port: parseInt(args.port ?? process.env.PGVIEW_PORT ?? "5432"),
+    dbName: args.dbname ?? process.env.PGVIEW_DBNAME!,
+    user: args.user ?? process.env.PGVIEW_USER!,
+    password: args.password ?? process.env.PGVIEW_PASSWORD!,
+  };
 
-    if (missing.length > 0) {
-      console.error(`Missing required parameters: ${missing.join(", ")}`);
-      process.exit(1);
-    }
+  const missing = Object.entries(config)
+    .filter(([_, value]) => !value)
+    .map(([key]) => key);
 
-    if (!values.host && !process.env.PGVIEW_DB_HOST) {
-      console.warn("DB host is not set, defaulting to localhost");
-    }
+  if (missing.length > 0) {
+    console.error(`Missing required parameters: ${missing.join(", ")}`);
+    process.exit(1);
+  }
 
-    if (!values.port && !process.env.PGVIEW_DB_PORT) {
-      console.warn("DB port is not set, defaulting to 5432");
-    }
+  if (!args.host && !process.env.PGVIEW_HOST) {
+    console.warn("Host is not set, defaulting to localhost");
+  }
+
+  if (!args.port && !process.env.PGVIEW_PORT) {
+    console.warn("Port is not set, defaulting to 5432");
   }
 
   container.register<DBConfig>(DB_CONFIG, {
