@@ -1,6 +1,7 @@
 import { container } from "tsyringe";
 import { DB_CONFIG } from "./tokens.config.js";
 import { DBConfig } from "../types/dbConfig.js";
+import { Args } from "../types/args.type.js";
 
 function parseDatabaseUrl(url: string): DBConfig {
   let parsed: URL;
@@ -21,7 +22,7 @@ function parseDatabaseUrl(url: string): DBConfig {
   };
 }
 
-export const resolveDBConfig = (args: Record<string, any>) => {
+export const resolveDBConfig = (args: Args) => {
   const urlConfig = args.url
     ? parseDatabaseUrl(args.url)
     : process.env.PGVIEW_URL

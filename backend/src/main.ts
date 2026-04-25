@@ -8,8 +8,9 @@ import { cors } from "hono/cors";
 import frontend from "../../frontend/dist/index.html";
 import { parseArgs } from "util";
 import { resolveDBConfig } from "./config/db.config.js";
+import { Args } from "./types/args.type.js";
 
-let args: ReturnType<typeof parseArgs>["values"];
+let args: Args;
 
 try {
   const { values } = parseArgs({
