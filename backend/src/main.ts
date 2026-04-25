@@ -9,19 +9,29 @@ import frontend from "../../frontend/dist/index.html";
 import { parseArgs } from "util";
 import { resolveDBConfig } from "./config/db.config.js";
 
-const { values: args } = parseArgs({
-  options: {
-    host: { type: "string" },
-    port: { type: "string" },
-    dbname: { type: "string" },
-    user: { type: "string" },
-    password: { type: "string" },
-    url: { type: "string" },
-    "listen-port": { type: "string" },
-    version: { type: "boolean" },
-    help: { type: "boolean" },
-  },
-});
+let args: ReturnType<typeof parseArgs>["values"];
+
+try {
+  const { values } = parseArgs({
+    options: {
+      host: { type: "string" },
+      port: { type: "string" },
+      dbname: { type: "string" },
+      user: { type: "string" },
+      password: { type: "string" },
+      url: { type: "string" },
+      "listen-port": { type: "string" },
+      version: { type: "boolean" },
+      help: { type: "boolean" },
+    },
+    strict: true,
+  });
+  args = values;
+} catch (e) {
+  console.error(`Error: ${e instanceof Error ? e.message : e}`);
+  console.error("Run 'pgview --help' for usage.");
+  process.exit(1);
+}
 
 if (args.help) {
   console.log(`\
