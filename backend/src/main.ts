@@ -19,8 +19,28 @@ const { values: args } = parseArgs({
     url: { type: "string" },
     "listen-port": { type: "string" },
     version: { type: "boolean" },
+    help: { type: "boolean" },
   },
 });
+
+if (args.help) {
+  console.log(`\
+Usage: pgview [options]
+
+A minimal and modern web-based PostgreSQL database viewer and editor.
+
+Options:
+  --host <host>          Database host (default: localhost)
+  --port <port>          Database port (default: 5432)
+  --dbname <dbname>      Database name
+  --user <user>          Database user
+  --password <password>  Database password
+  --url <url>            PostgreSQL connection string
+  --listen-port <port>   Port to expose PGView on (default: 8080)
+  --version              Show version
+  --help                 Show this help message`);
+  process.exit(0);
+}
 
 if (args.version) {
   console.log(process.env.PGVIEW_VERSION);
