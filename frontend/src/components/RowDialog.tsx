@@ -174,8 +174,12 @@ export function RowDialog() {
 
     const updateHeight = () => {
       const contentHeight = editor.getContentHeight();
+      const parentHeight =
+        containerRef.current?.parentElement?.clientHeight ?? 0;
+
       if (containerRef.current) {
-        containerRef.current.style.height = `${contentHeight}px`;
+        containerRef.current.style.height = `${Math.max(contentHeight, parentHeight)}px`;
+        editor.layout();
       }
     };
 

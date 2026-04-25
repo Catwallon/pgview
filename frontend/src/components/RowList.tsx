@@ -171,8 +171,8 @@ export function RowList() {
         </Table>
       </div>
       {rows && rows.items.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <p className="text-xl text-gray-500">Table is empty</p>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-xl text-muted-foreground">Table is empty</p>
         </div>
       )}
     </div>
