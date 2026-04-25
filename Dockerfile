@@ -14,7 +14,7 @@ ENV BUN_INSTALL_CACHE_DIR=/root/.bun/install/cache
 RUN --mount=type=cache,id=bun,target=/root/.bun/install/cache bun install --frozen-lockfile
 
 COPY . .
-RUN bun run build
+RUN bun run build --define process.env.PGVIEW_VERSION="'$PGVIEW_VERSION'"
 
 FROM alpine:3.22.4
 

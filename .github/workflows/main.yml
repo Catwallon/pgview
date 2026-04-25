@@ -23,7 +23,7 @@ jobs:
         run: bun install
 
       - name: Build
-        run: bun run build
+        run: bun run build --define process.env.PGVIEW_VERSION="'${{ github.ref_name }}'"
         env:
           VITE_PGVIEW_VERSION: ${{ github.ref_name }}
 

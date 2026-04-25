@@ -21,7 +21,7 @@ function parseDatabaseUrl(url: string): DBConfig {
   };
 }
 
-export const resolveDBConfig = (args: Record<string, string>) => {
+export const resolveDBConfig = (args: Record<string, any>) => {
   const urlConfig = args.url
     ? parseDatabaseUrl(args.url)
     : process.env.PGVIEW_URL

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development bun --watch src/main.ts",
-    "build": "bun build src/main.ts --compile --production --outfile dist/pgview"
+    "build": "bun build src/main.ts --compile --production --outfile dist/pgview --define process.env.NODE_ENV=\"'production'\""
   },
   "dependencies": {
     "hono": "^4.12.14",

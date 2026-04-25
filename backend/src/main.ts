@@ -9,8 +9,6 @@ import frontend from "../../frontend/dist/index.html";
 import { parseArgs } from "util";
 import { resolveDBConfig } from "./config/db.config.js";
 
-console.log("Starting PGView...");
-
 const { values: args } = parseArgs({
   options: {
     host: { type: "string" },
@@ -20,14 +18,22 @@ const { values: args } = parseArgs({
     password: { type: "string" },
     url: { type: "string" },
     "listen-port": { type: "string" },
+    version: { type: "boolean" },
   },
 });
+
+if (args.version) {
+  console.log(process.env.PGVIEW_VERSION);
+  process.exit(0);
+}
 
 const port = parseInt(
   args["listen-port"] ?? process.env.PGVIEW_LISTEN_PORT ?? "8080",
 );
 
 resolveDBConfig(args);
+
+console.log("Starting PGView...");
 
 const app = new Hono();
 
