@@ -5,10 +5,13 @@ import { TableController } from "./controllers/table.controller.js";
 import { RowController } from "./controllers/row.controller.js";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import frontend from "../../frontend/dist/index.html";
 import { parseArgs } from "util";
 import { resolveDBConfig } from "./config/db.config.js";
 import { Args } from "./types/args.type.js";
+import { serveStatic } from "hono/bun";
+import { join } from "path";
+
+const isProd = process.env.NODE_ENV === "production";
 
 let args: Args;
 
@@ -68,7 +71,12 @@ console.log("Starting PGView...");
 
 const app = new Hono();
 
-if (process.env.NODE_ENV === "development") {
+if (isProd) {
+  app.use(
+    "/*",
+    serveStatic({ root: join(import.meta.dir, "../../frontend/dist") }),
+  );
+} else {
   app.get(
     "/*",
     cors({
@@ -108,9 +116,8 @@ app.delete("/api/databases/:dbName/tables/:tableName/rows", async (c) => {
 Bun.serve({
   port,
   routes: {
-    "/*": frontend,
-    "/api/*": app.fetch,
+    "/*": app.fetch,
   },
 });
 
-console.log(`PGView started on http://localhost:${port}`);
+console.log(`PGView started on http://localhost:${isProd ? port : 5173}`);
